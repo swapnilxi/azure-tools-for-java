@@ -5,6 +5,12 @@
 
 package com.microsoft.azure.toolkit.intellij.connector;
 
+import com.azure.core.management.AzureEnvironment;
+import com.azure.core.management.profile.AzureProfile;
+import com.azure.identity.AzureCliCredential;
+import com.azure.identity.AzureCliCredentialBuilder;
+import com.azure.resourcemanager.servicelinker.ServiceLinkerManager;
+import com.azure.resourcemanager.servicelinker.models.LinkerResource;
 import com.intellij.execution.application.ApplicationConfiguration;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.ModuleBasedConfiguration;
@@ -90,6 +96,8 @@ public class Connection<R, C> {
     public boolean prepareBeforeRun(@Nonnull RunConfiguration configuration, DataContext dataContext) {
         try {
             this.env = getEnvironmentVariables(configuration.getProject());
+            // create rc if not exists
+            getOrCreateResourceConnection();
             if (configuration instanceof IConnectionAware) { // set envs for remote deploy
                 ((IConnectionAware) configuration).setConnection(this);
             }
@@ -100,10 +108,18 @@ public class Connection<R, C> {
         }
     }
 
+    private void getOrCreateResourceConnection() {
+        final AzureCliCredential build = new AzureCliCredentialBuilder().build();
+        ServiceLinkerManager manager = ServiceLinkerManager.configure()
+                .authenticate(build, azureProfile);
+        LinkerResource resource = manager.linkers().list()
+    }
+
     /**
      * update java parameters exactly before start the {@code configuration}
      */
     public void updateJavaParametersAtRun(@Nonnull RunConfiguration configuration, @Nonnull JavaParameters parameters) {
+        // todo: replace with local resource connection?
         if (Objects.nonNull(this.env)) {
             for (final Map.Entry<String, String> entry : this.env.entrySet()) {
                 parameters.addEnv(entry.getKey(), entry.getValue());
