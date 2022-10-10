@@ -48,18 +48,18 @@ public class SqlCosmosDBAccountResourceDefinition extends AzureServiceResource.D
         final SqlDatabase database = data.getData();
         final CosmosDBAccount account = database.getParent();
         final HashMap<String, String> env = new HashMap<>();
-        env.put(String.format("%s_ENDPOINT", Connection.ENV_PREFIX), account.getDocumentEndpoint());
-        env.put(String.format("%s_KEY", Connection.ENV_PREFIX), account.listKeys().getPrimaryMasterKey());
-        env.put(String.format("%s_DATABASE", Connection.ENV_PREFIX), database.getName());
+        env.put(String.format("azure.cosmos.uri", Connection.ENV_PREFIX), account.getDocumentEndpoint());
+        env.put(String.format("azure.cosmos.key", Connection.ENV_PREFIX), account.listKeys().getPrimaryMasterKey());
+        env.put(String.format("azure.cosmos.database", Connection.ENV_PREFIX), database.getName());
         return env;
     }
 
     @Override
     public List<Pair<String, String>> getSpringProperties() {
         final List<Pair<String, String>> properties = new ArrayList<>();
-        properties.add(Pair.of("spring.cloud.azure.cosmos.endpoint", String.format("${%s_ENDPOINT}", Connection.ENV_PREFIX)));
-        properties.add(Pair.of("spring.cloud.azure.cosmos.key", String.format("${%s_KEY}", Connection.ENV_PREFIX)));
-        properties.add(Pair.of("spring.cloud.azure.cosmos.database", String.format("${%s_DATABASE}", Connection.ENV_PREFIX)));
+        properties.add(Pair.of("spring.cloud.azure.cosmos.endpoint", "${azure.cosmos.uri}"));
+        properties.add(Pair.of("spring.cloud.azure.cosmos.key", "${azure.cosmos.key}"));
+        properties.add(Pair.of("spring.cloud.azure.cosmos.database", "${azure.cosmos.database}"));
         properties.add(Pair.of("spring.cloud.azure.cosmos.populate-query-metrics", String.valueOf(true)));
         return properties;
     }

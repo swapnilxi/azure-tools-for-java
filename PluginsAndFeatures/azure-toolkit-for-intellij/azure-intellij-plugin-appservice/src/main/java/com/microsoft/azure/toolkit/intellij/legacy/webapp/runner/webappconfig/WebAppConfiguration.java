@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,7 +58,7 @@ public class WebAppConfiguration extends AzureRunConfigurationBase<IntelliJWebAp
     private final IntelliJWebAppSettingModel webAppSettingModel;
     @Getter
     @Setter
-    private Connection<?, ?> connection;
+    private Set<Connection<?, ?>> connections = new HashSet<>();
 
     public WebAppConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, String name) {
         super(project, factory, name);
@@ -386,5 +387,10 @@ public class WebAppConfiguration extends AzureRunConfigurationBase<IntelliJWebAp
         });
         Optional.ofNullable(webApp.getRegion()).ifPresent(r -> this.setRegion(r.getName()));
         this.setApplicationSettings(webApp.getAppSettings());
+    }
+
+    @Override
+    public void addConnection(@Nonnull Connection<?, ?> connection) {
+        this.connections.add(connection);
     }
 }

@@ -94,15 +94,16 @@ public class WebAppRunState extends AzureRunProfileState<AppServiceAppBase<?, ?,
             throw new FileNotFoundException(message("webapp.deploy.error.noTargetFile", artifact.getAbsolutePath()));
         }
         final WebAppBase<?, ?, ?> deployTarget = getOrCreateDeployTargetFromAppSettingModel(processHandler);
-        applyResourceConnection(deployTarget, processHandler);
+        webAppConfiguration.getConnections().forEach(connection -> applyResourceConnection(deployTarget, connection));
         updateApplicationSettings(deployTarget, processHandler);
         AzureWebAppMvpModel.getInstance().deployArtifactsToWebApp(deployTarget, artifact, webAppSettingModel.isDeployToRoot(), processHandler);
         return deployTarget;
     }
 
-    private void applyResourceConnection(@Nonnull AppServiceAppBase<?, ?, ?> deployTarget, RunProcessHandler processHandler) {
-        final Connection<?, ?> connection = webAppConfiguration.getConnection();
-        if (Objects.nonNull(connection)) {
+    private void applyResourceConnection(@Nonnull AppServiceAppBase<?, ?, ?> deployTarget, @Nonnull Connection<?, ?> connection) {
+        if (connection.isResourceConnectionSupported()) {
+            connection.prepareResourceConnection(deployTarget.getId());
+        } else {
             Optional.ofNullable(connection.getEnvironmentVariables(this.project)).ifPresent(appSettingsForResourceConnection::putAll);
         }
         if (Objects.nonNull(connection) && connection.getResource().getDefinition() instanceof IJavaAgentSupported) {

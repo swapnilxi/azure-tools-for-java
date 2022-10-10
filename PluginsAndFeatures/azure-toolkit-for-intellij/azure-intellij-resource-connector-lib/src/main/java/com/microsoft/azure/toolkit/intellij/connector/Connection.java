@@ -5,12 +5,14 @@
 
 package com.microsoft.azure.toolkit.intellij.connector;
 
-import com.azure.core.management.AzureEnvironment;
+import com.azure.core.credential.TokenCredential;
 import com.azure.core.management.profile.AzureProfile;
-import com.azure.identity.AzureCliCredential;
-import com.azure.identity.AzureCliCredentialBuilder;
+import com.azure.resourcemanager.resources.fluentcore.arm.ResourceId;
 import com.azure.resourcemanager.servicelinker.ServiceLinkerManager;
+import com.azure.resourcemanager.servicelinker.models.AzureResource;
+import com.azure.resourcemanager.servicelinker.models.ClientType;
 import com.azure.resourcemanager.servicelinker.models.LinkerResource;
+import com.azure.resourcemanager.servicelinker.models.SecretAuthInfo;
 import com.intellij.execution.application.ApplicationConfiguration;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.ModuleBasedConfiguration;
@@ -19,8 +21,13 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.microsoft.azure.toolkit.intellij.common.runconfig.IWebAppRunConfiguration;
+import com.microsoft.azure.toolkit.lib.Azure;
+import com.microsoft.azure.toolkit.lib.auth.Account;
+import com.microsoft.azure.toolkit.lib.auth.AzureAccount;
 import com.microsoft.azure.toolkit.lib.common.messager.AzureMessager;
+import com.microsoft.azure.toolkit.lib.common.model.Subscription;
 import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
+import com.microsoft.azure.toolkit.lib.common.utils.Utils;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,6 +41,8 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -96,10 +105,8 @@ public class Connection<R, C> {
     public boolean prepareBeforeRun(@Nonnull RunConfiguration configuration, DataContext dataContext) {
         try {
             this.env = getEnvironmentVariables(configuration.getProject());
-            // create rc if not exists
-            getOrCreateResourceConnection();
             if (configuration instanceof IConnectionAware) { // set envs for remote deploy
-                ((IConnectionAware) configuration).setConnection(this);
+                ((IConnectionAware) configuration).addConnection(this);
             }
             return true;
         } catch (final Throwable e) {
@@ -108,11 +115,42 @@ public class Connection<R, C> {
         }
     }
 
-    private void getOrCreateResourceConnection() {
-        final AzureCliCredential build = new AzureCliCredentialBuilder().build();
-        ServiceLinkerManager manager = ServiceLinkerManager.configure()
-                .authenticate(build, azureProfile);
-        LinkerResource resource = manager.linkers().list()
+    public boolean isResourceConnectionSupported() {
+        return this.resource.getDefinition().isResourceConnectionSupported();
+    }
+
+    @Nonnull
+    public void prepareResourceConnection(final String resourceId) {
+        LinkerResource resourceConnection = getResourceConnection(resourceId);
+        if (Objects.isNull(resourceConnection)) {
+            AzureMessager.getMessager().info("Creating resource connection...");
+            createResourceConnection(resourceId, ClientType.JAVA);
+            createResourceConnection(resourceId, ClientType.SPRING_BOOT);
+            AzureMessager.getMessager().info("Resource connection created.");
+        } else {
+            AzureMessager.getMessager().info("Resource connection already exists.");
+        }
+    }
+
+    @Nullable
+    public LinkerResource getResourceConnection(final String resourceId) {
+        final ResourceId id = ResourceId.fromString(resourceId);
+        final ServiceLinkerManager manager = ResourceConnectionManagerHolder.getManager(id.subscriptionId());
+        return manager.linkers().list(resourceId).stream()
+                .filter(linker -> StringUtils.equalsIgnoreCase(resource.getDataId(), linker.targetService() instanceof AzureResource ?
+                        ((AzureResource) linker.targetService()).id() : null))
+                .findFirst().orElse(null);
+    }
+
+    private LinkerResource createResourceConnection(final String resourceId, final ClientType type) {
+        final ResourceId id = ResourceId.fromString(resourceId);
+        final ServiceLinkerManager manager = ResourceConnectionManagerHolder.getManager(id.subscriptionId());
+        return manager.linkers().define(type.toString() + Utils.getTimestamp())
+                .withExistingResourceUri(resourceId)
+                .withAuthInfo(new SecretAuthInfo())
+                .withClientType(type)
+                .withTargetService(new AzureResource().withId(resource.getDataId()))
+                .create();
     }
 
     /**
@@ -154,5 +192,19 @@ public class Connection<R, C> {
 
     public boolean validate(Project project) {
         return this.getDefinition().validate(this, project);
+    }
+
+    static class ResourceConnectionManagerHolder {
+        static Map<String, ServiceLinkerManager> managers = new HashMap<>();
+
+        static ServiceLinkerManager getManager(String subscriptionId) {
+            return managers.computeIfAbsent(subscriptionId, id -> {
+                final Account account = Azure.az(AzureAccount.class).getAccount();
+                final Subscription subscription = account.getSubscription(subscriptionId);
+                final TokenCredential tokenCredential = account.getTokenCredential(subscription.getId());
+                final AzureProfile azureProfile = new AzureProfile(subscription.getTenantId(), subscription.getId(), account.getEnvironment());
+                return ServiceLinkerManager.configure().authenticate(tokenCredential, azureProfile);
+            });
+        }
     }
 }
