@@ -2,7 +2,7 @@
              xmlns:xi="http://www.w3.org/2001/XInclude">
   <id>com.microsoft.tooling.msservices.intellij.azure</id>
   <name>Azure Toolkit for IntelliJ</name>
-  <version>3.70.0</version>
+  <version>3.70.1</version>
   <vendor email="java@microsoft.com" url="http://www.microsoft.com">Microsoft</vendor>
 
   <description><![CDATA[
@@ -25,22 +25,10 @@
   <change-notes>
     <![CDATA[
     <html>
-      <h3>3.70.0</h3>
-      <h4>Added</h4>
-      <ul>
-        <li>Added support for remote debugging of <code>Azure Spring Apps</code>.</li>
-        <li>Added support for remote debugging of <code>Azure Function Apps</code>.</li>
-        <li>Added support for data management of <code>Azure Storage Account</code> in Azure Explorer.</li>
-        <li>Added support for data management of <code>Azure Cosmos DB account</code> in Azure Explorer.</li>
-        <li>Added support for filtering app settings of <code>Azure Web App/ Function App</code> in properties view and run configuration dialog.</li>
-      </ul>
+      <h3>3.70.1</h3>
        <h4>Fixed</h4>
        <ul>
-        <li>Fix <code>Open Spark History UI</code> link no reaction, when there is no job in the cluster. </li>
-        <li>Fix local console and Livy console run failed.</li>
-        <li>Fix error getting cluster storage configuration.</li>
-        <li>Fix linked clusters cannot be expanded when not logged in to azure.</li>
-        <li>Fix local console get IDE Fatal Error when the project first create.</li>
+        <li>Fix issue during import/delete sql document with partition key.</li>
        </ul>
       <p>You may get the full change log <a href="https://github.com/Microsoft/azure-tools-for-java/blob/develop/CHANGELOG.md">here</a></p>
     </html>
