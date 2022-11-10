@@ -8,7 +8,7 @@ plugins {
 }
 
 ext {
-    azureToolkitVersion = "0.26.0"
+    azureToolkitVersion = "0.26.1"
     azureToolkitUtilsVersion = "3.70.0"
 }
 
@@ -82,7 +82,7 @@ subprojects {
     apply plugin: 'io.freefair.aspectj.post-compile-weaving'
     apply plugin: 'io.spring.dependency-management'
     ext {
-        azureToolkitVersion = "0.26.0"
+        azureToolkitVersion = "0.26.1"
         azureToolkitUtilsVersion = "3.70.0"
     }
 
