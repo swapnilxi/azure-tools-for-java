@@ -67,7 +67,6 @@ public class IntellijPostgreSqlActionsContributor implements IActionsContributor
         am.registerHandler(PostgreSqlActionsContributor.OPEN_DATABASE_TOOL, (r, e) -> true, openDatabaseHandler);
     }
 
-    @AzureOperation(name = "postgre.open_database_tools.server", params = {"server.getName()"}, type = AzureOperation.Type.ACTION)
     private void openDatabaseTool(Project project, @Nonnull PostgreSqlServer server) {
         final String DATABASE_TOOLS_PLUGIN_ID = "com.intellij.database";
         final String DATABASE_PLUGIN_NOT_INSTALLED = "\"Database tools and SQL\" plugin is not installed.";

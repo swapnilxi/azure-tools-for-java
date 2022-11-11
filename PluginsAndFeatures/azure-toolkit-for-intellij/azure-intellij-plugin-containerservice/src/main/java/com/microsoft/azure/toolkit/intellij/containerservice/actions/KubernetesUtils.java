@@ -56,8 +56,7 @@ public class KubernetesUtils {
         final Consumer<Void> consumer = ignore -> openInKubernetesPlugin(project, installedPluginId);
         final ActionView.Builder view = new ActionView.Builder("Open in kubernetes plugin")
                 .title(ignore -> AzureString.fromString("Open in kubernetes plugin")).enabled(ignore -> true);
-        final Action.Id<Void> id = Action.Id.of("kubernetes.open_kubernetes_plugin");
-        return new Action<>(id, consumer, view);
+        return new Action<>(consumer, view);
     }
 
     private static void openInKubernetesPlugin(@Nonnull final Project project, String pluginId) {
@@ -82,8 +81,7 @@ public class KubernetesUtils {
         final Consumer<Void> consumer = ignore -> AzureTaskManager.getInstance().runLater(KubernetesUtils::searchK8sPlugin);
         final ActionView.Builder view = new ActionView.Builder("Install kubernetes plugin")
                 .title(ignore -> AzureString.fromString("Install kubernetes plugin")).enabled(ignore -> true);
-        final Action.Id<Void> id = Action.Id.of("kubernetes.install_kubernetes_plugin");
-        return new Action<>(id, consumer, view);
+        return new Action<>(consumer, view);
     }
 
     @AzureOperation(name = "kubernetes.search_k8s_plugin", type = AzureOperation.Type.TASK, target = AzureOperation.Target.PLATFORM)

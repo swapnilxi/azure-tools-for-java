@@ -367,8 +367,7 @@ public class FunctionRunState extends AzureRunProfileState<Boolean> {
             functionRunConfiguration.setAutoPort(true);
             AzureTaskManager.getInstance().runLater(() -> ProgramRunnerUtil.executeConfiguration(settings, DefaultRunExecutor.getRunExecutorInstance()));
         };
-        final Action.Id<Void> RETRY_WITH_FREE_PORT = Action.Id.of("function.retry_with_free_port");
-        final Action<Void> retryAction = new Action<>(RETRY_WITH_FREE_PORT, consumer, new ActionView.Builder("Retry with free port"));
+        final Action<Void> retryAction = new Action<>(consumer, new ActionView.Builder("Retry with free port"));
         retryAction.setAuthRequired(false);
         final String errorMessage = ExceptionUtils.getRootCause(throwable).getMessage();
         return StringUtils.isNotEmpty(errorMessage) && PORT_EXCEPTION_PATTERN.matcher(errorMessage).find() ?

@@ -137,7 +137,7 @@ public class AttachDebuggerAction {
         final String confirmEnableDebuggingMessage = "Remote debugging should be enabled first before debugging. Would you like to enable it?";
         final Action<SpringCloudApp> enableDebuggingAction = AzureActionManager.getInstance().getAction(SpringCloudActionsContributor.ENABLE_REMOTE_DEBUGGING);
         AzureMessager.getMessager().warning(confirmEnableDebuggingMessage, null,
-                new Action<>(Action.Id.of("springcloud.enable_remote_debugging_dialog"), new ActionView.Builder("Enable Remote Debugging")) {
+                new Action<>(new ActionView.Builder("Enable Remote Debugging")) {
                     @Override
                     public void handle(Object source, Object e) {
                         enableDebuggingAction.handle(appInstance.getParent().getParent(), e);
@@ -154,7 +154,7 @@ public class AttachDebuggerAction {
     @Nullable
     private static Action<?> generateAccessPublicUrlAction(@Nonnull SpringCloudApp app) {
         if (app.isPublicEndpointEnabled()) {
-            return  new Action<>(Action.Id.of("springcloud.open_public_url_dialog"), new ActionView.Builder("Access Public Endpoint")) {
+            return new Action<>(new ActionView.Builder("Access Public Endpoint")) {
                 @Override
                 public void handle(Object source, Object e) {
                     AzureActionManager.getInstance().getAction(ResourceCommonActionsContributor.OPEN_URL).handle(app.getApplicationUrl());
@@ -166,7 +166,7 @@ public class AttachDebuggerAction {
 
 
     private static Action<?> generateAccessTestUrlAction(@Nonnull SpringCloudApp app) {
-        return new Action<>(Action.Id.of("springcloud.open_test_url_dialog"), new ActionView.Builder("Access Test Endpoint")) {
+        return new Action<>(new ActionView.Builder("Access Test Endpoint")) {
             @Override
             public void handle(Object source, Object e) {
                 AzureActionManager.getInstance().getAction(ResourceCommonActionsContributor.OPEN_URL).handle(app.getTestUrl());

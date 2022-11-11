@@ -208,8 +208,7 @@ public class Favorites extends AbstractAzResourceModule<Favorite, AzResource.Non
         final ActionView.Builder unpinAllView = new ActionView.Builder("Unmark All As Favorite", AzureIcons.Action.UNPIN.getIconPath())
             .enabled(s -> s instanceof Favorites);
         final Consumer<Favorites> unpinAllHandler = Favorites::unpinAll;
-        final Action.Id<Favorites> UNPIN_ALL = Action.Id.of("resource.unpin_all");
-        final Action<Favorites> unpinAllAction = new Action<>(UNPIN_ALL, unpinAllHandler, unpinAllView);
+        final Action<Favorites> unpinAllAction = new Action<>(unpinAllHandler, unpinAllView);
         unpinAllAction.setShortcuts("control F11");
 
         final AzureModuleLabelView<Favorites> rootView = new AzureModuleLabelView<>(Favorites.getInstance(), "Favorites", FAVORITE_ICON);

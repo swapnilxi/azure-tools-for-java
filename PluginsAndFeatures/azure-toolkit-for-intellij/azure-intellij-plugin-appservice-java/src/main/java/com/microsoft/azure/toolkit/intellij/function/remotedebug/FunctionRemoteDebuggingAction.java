@@ -38,8 +38,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class FunctionRemoteDebuggingAction {
-
-    @AzureOperation(name = "function.start_remote_debugging.app", params = {"target.getName()"}, type = AzureOperation.Type.ACTION)
     public static void startDebugging(@Nonnull FunctionAppBase<?, ?, ?> target, Project project) {
         if (!target.isRemoteDebugEnabled()) {
             showEnableDebuggingMessage(target);
@@ -110,7 +108,7 @@ public class FunctionRemoteDebuggingAction {
         final String confirmEnableDebuggingMessage = "Remote debugging should be enabled first before debugging. Would you like to enable it?";
         final Action<FunctionAppBase<?, ?, ?>> enableDebuggingAction = AzureActionManager.getInstance().getAction(FunctionAppActionsContributor.ENABLE_REMOTE_DEBUGGING);
         AzureMessager.getMessager().warning(confirmEnableDebuggingMessage, null,
-                new Action<>(Action.Id.of("function.enable_remote_debugging_notification"), new ActionView.Builder("Enable Remote Debugging")) {
+                new Action<>(new ActionView.Builder("Enable Remote Debugging")) {
                     @Override
                     public void handle(Object source, Object e) {
                         enableDebuggingAction.handle(target, e);

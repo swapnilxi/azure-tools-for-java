@@ -55,8 +55,7 @@ public class CreateWebAppAction {
                     }, (error) -> {
                         final String title = String.format("Reopen dialog \"%s\"", dialog.getTitle());
                         final Consumer<Object> act = t -> openDialog(project, config);
-                        final Action.Id<Object> REOPEN = Action.Id.of("webapp.reopen_creation_dialog");
-                        final Action<?> action = new Action<>(REOPEN, act, new ActionView.Builder(title));
+                        final Action<?> action = new Action<>(act, new ActionView.Builder(title));
                         AzureMessager.getMessager().error(error, null, action);
                     });
             });

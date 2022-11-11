@@ -251,9 +251,8 @@ public class StorageFileActions {
     }
 
     private static Action<Void> openUrl(@Nonnull final String url) {
-        final Action.Id<Void> OPEN = Action.Id.of("common.open_in_browser");
         final ActionView.Builder view = new ActionView.Builder("Open with Browser");
         final Consumer<Void> handler = v -> AzureActionManager.getInstance().getAction(ResourceCommonActionsContributor.OPEN_URL).handle(url);
-        return new Action<>(OPEN, handler, view);
+        return new Action<>(handler, view);
     }
 }

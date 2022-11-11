@@ -32,7 +32,6 @@ public class EnableRemoteDebuggingAction {
     private static final String CONFIRM_DIALOG_TITLE = "%s Remote Debugging";
     private static final String SUCCESS_MESSAGE = "Remote debugging is %sd for app %s successfully";
 
-    @AzureOperation(name = "springcloud.enable_remote_debugging.app", params = {"app.getName()"}, type = AzureOperation.Type.ACTION)
     public static void enableRemoteDebugging(@Nonnull SpringCloudApp app, @Nullable Project project) {
         toggleDebuggingAction(true, app, project);
     }
@@ -70,7 +69,7 @@ public class EnableRemoteDebuggingAction {
 
     private static Action<?> generateDebugAction(@Nonnull SpringCloudApp app, @Nullable Project project) {
         final Action<SpringCloudApp> remoteDebuggingAction = AzureActionManager.getInstance().getAction(SpringCloudActionsContributor.ATTACH_DEBUGGER_APP);
-        return new Action<>(Action.Id.of("springcloud.remote_debug_dialog"), new ActionView.Builder("Attach Debugger")) {
+        return new Action<>(new ActionView.Builder("Attach Debugger")) {
             @Override
             public void handle(Object source, Object e) {
                 remoteDebuggingAction.handle(app, e);
@@ -79,7 +78,7 @@ public class EnableRemoteDebuggingAction {
     }
 
     private static Action<?> generateLearnMoreAction() {
-        return new Action<>(Action.Id.of("springcloud.learn_more_dialog"), new ActionView.Builder("Learn More")) {
+        return new Action<>(new ActionView.Builder("Learn More")) {
             @Override
             public void handle(Object source, Object e) {
                 AzureActionManager.getInstance().getAction(ResourceCommonActionsContributor.OPEN_URL).handle(REMOTE_DEBUGGING_DOCS);

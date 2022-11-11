@@ -29,12 +29,10 @@ public class FunctionEnableRemoteDebuggingAction {
     private static final String CONFIRM_DIALOG_TITLE = "%s Remote Debugging";
     private static final String SUCCESS_MESSAGE = "Remote debugging is %sd for app %s successfully";
 
-    @AzureOperation(name = "function.enable_remote_debugging.app", params = {"app.getName()"}, type = AzureOperation.Type.ACTION)
     public static void enableRemoteDebugging(@Nonnull FunctionAppBase<?, ?, ?> app, @Nullable Project project) {
         toggleDebuggingAction(app, true, project);
     }
 
-    @AzureOperation(name = "function.disable_remote_debugging.app", params = {"app.getName()"}, type = AzureOperation.Type.ACTION)
     public static void disableRemoteDebugging(@Nonnull FunctionAppBase<?, ?, ?> app, @Nullable Project project) {
         toggleDebuggingAction(app, false, project);
     }
@@ -75,6 +73,6 @@ public class FunctionEnableRemoteDebuggingAction {
 
     private static Action<?> generateDebugAction(@Nonnull FunctionAppBase<?, ?, ?> app, @Nullable Project project) {
         final Action<FunctionAppBase<?, ?, ?>> remoteDebuggingAction = AzureActionManager.getInstance().getAction(FunctionAppActionsContributor.REMOTE_DEBUGGING);
-        return new Action<>(Action.Id.of("function.start_remote_debugging"), (d, e) -> remoteDebuggingAction.handle(app, e), new ActionView.Builder("Attach Debugger"));
+        return new Action<>((d, e) -> remoteDebuggingAction.handle(app, e), new ActionView.Builder("Attach Debugger"));
     }
 }

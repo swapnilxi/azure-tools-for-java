@@ -114,16 +114,14 @@ public abstract class AbstractAzureStorageExplorerHandler {
             .getAction(ResourceCommonActionsContributor.OPEN_URL).handle(storageAccount.getPortalUrl() + "/storagebrowser");
         final ActionView.Builder openInAzureView = new ActionView.Builder("Open in Azure")
             .title(ignore -> AzureString.fromString("Open Storage account in Azure")).enabled(ignore -> true);
-        final Action.Id<Void> OPEN = Action.Id.of("storage.open_portal_storage_browser");
-        final Action<Void> openInAzureAction = new Action<>(OPEN, openInAzureConsumer, openInAzureView);
+        final Action<Void> openInAzureAction = new Action<>(openInAzureConsumer, openInAzureView);
         openInAzureAction.setAuthRequired(false);
         // Download Storage Explorer
         final Consumer<Void> downloadConsumer = ignore ->
             AzureActionManager.getInstance().getAction(ResourceCommonActionsContributor.OPEN_URL).handle(STORAGE_EXPLORER_DOWNLOAD_URL);
         final ActionView.Builder downloadView = new ActionView.Builder("Download")
             .title(ignore -> AzureString.fromString("Download Azure Storage Explorer")).enabled(ignore -> true);
-        final Action.Id<Void> DOWNLOAD = Action.Id.of("storage.download_explorer");
-        final Action<Void> downloadAction = new Action<>(DOWNLOAD, downloadConsumer, downloadView);
+        final Action<Void> downloadAction = new Action<>(downloadConsumer, downloadView);
         downloadAction.setAuthRequired(false);
         // Open Azure Settings Panel, and re-run
         final Action<Object> openSettingsAction = AzureActionManager.getInstance().getAction(ResourceCommonActionsContributor.OPEN_AZURE_SETTINGS);
@@ -135,8 +133,7 @@ public abstract class AbstractAzureStorageExplorerHandler {
         };
         final ActionView.Builder configureView = new ActionView.Builder("Configure")
             .title(ignore -> AzureString.fromString("Configure path for Azure Storage Explorer")).enabled(ignore -> true);
-        final Action.Id<Void> CONFIG = Action.Id.of("storage.config_explorer_path");
-        final Action<Void> configureAction = new Action<>(CONFIG, configureConsumer, configureView);
+        final Action<Void> configureAction = new Action<>(configureConsumer, configureView);
         configureAction.setAuthRequired(false);
         return new Action[]{openInAzureAction, downloadAction, configureAction};
     }

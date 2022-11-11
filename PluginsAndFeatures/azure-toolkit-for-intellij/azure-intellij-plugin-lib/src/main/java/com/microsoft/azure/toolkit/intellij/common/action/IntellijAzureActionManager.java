@@ -26,6 +26,7 @@ import com.microsoft.azure.toolkit.lib.common.action.ActionGroup;
 import com.microsoft.azure.toolkit.lib.common.action.ActionView;
 import com.microsoft.azure.toolkit.lib.common.action.AzureActionManager;
 import com.microsoft.azure.toolkit.lib.common.action.IActionGroup;
+import com.microsoft.azure.toolkit.lib.common.exception.AzureToolkitRuntimeException;
 import com.microsoft.azure.toolkit.lib.common.model.AbstractAzResource;
 import com.microsoft.azure.toolkit.lib.common.view.IView;
 import lombok.Getter;
@@ -61,6 +62,9 @@ public class IntellijAzureActionManager extends AzureActionManager {
     }
 
     public <D> void registerAction(Action<D> action) {
+        if(action.getId().equalsIgnoreCase(Action.ANONYMOUS.getId())){
+            throw new AzureToolkitRuntimeException("anonymous action is not allowed");
+        }
         final ActionManager manager = ActionManager.getInstance();
         if (Objects.isNull(manager.getAction(action.getId()))) {
             manager.registerAction(action.getId(), new AnActionWrapper<>(action));

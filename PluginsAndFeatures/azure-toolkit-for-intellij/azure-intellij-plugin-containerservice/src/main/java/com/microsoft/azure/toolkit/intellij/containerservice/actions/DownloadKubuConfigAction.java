@@ -62,15 +62,13 @@ public class DownloadKubuConfigAction {
         };
         final ActionView.Builder view = new ActionView.Builder("Set kubeconfig for project")
             .title(ignore -> AzureString.fromString("Set kubeconfig")).enabled(ignore -> true);
-        final Action.Id<Void> id = Action.Id.of("kubernetes.set_kube_config");
-        return new Action<>(id, consumer, view);
+        return new Action<>(consumer, view);
     }
 
     // todo: remove duplicated with AppServiceFileAction
     private static Action<?> getOpenInExplorerAction(@Nonnull Project project, @Nonnull File file) {
         final ActionView.Builder view = new ActionView.Builder("Open in Explorer").enabled(ignore -> true);
-        final Action.Id<Void> id = Action.Id.of("common.reveal_file_in_explorer");
-        return new Action<>(id, ignore -> VirtualFileActions.revealInExplorer(file), view);
+        return new Action<>(ignore -> VirtualFileActions.revealInExplorer(file), view);
     }
 
     private static Action<?> getOpenInEditorAction(@Nonnull Project project, @Nonnull File file) {
@@ -81,7 +79,6 @@ public class DownloadKubuConfigAction {
             }, fileEditorManager);
         };
         final ActionView.Builder view = new ActionView.Builder("Open in Editor").enabled(ignore -> true);
-        final Action.Id<Void> id = Action.Id.of("common.open_file_in_editor");
-        return new Action<>(id, consumer, view);
+        return new Action<>(consumer, view);
     }
 }

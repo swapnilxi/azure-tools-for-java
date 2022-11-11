@@ -27,7 +27,7 @@ public class DeploymentActionsContributor implements IActionsContributor {
     public static final String DEPLOYMENTS_ACTIONS = "actions.resourceDeployments.deployments";
 
     public static final Action.Id<ResourceDeployment> EDIT = Action.Id.of("arm.edit_deployment.deployment");
-    public static final Action.Id<ResourceDeployment> UPDATE = Action.Id.of("arm.update_deployment.deployment");
+    public static final Action.Id<ResourceDeployment> UPDATE = Action.Id.of("arm.update_deployment_open_dialog.deployment");
     public static final Action.Id<ResourceDeployment> EXPORT_TEMPLATE = Action.Id.of("arm.export_template.deployment");
     public static final Action.Id<ResourceDeployment> EXPORT_PARAMETER = Action.Id.of("arm.export_parameter.deployment");
     public static final Action.Id<ResourceGroup> GROUP_CREATE_DEPLOYMENT = Action.Id.of("arm.create_deployment.group");
@@ -38,7 +38,7 @@ public class DeploymentActionsContributor implements IActionsContributor {
             .title(s -> Optional.ofNullable(s).map(r -> description("arm.edit_deployment.deployment", ((ResourceDeployment) r).getName())).orElse(null))
             .enabled(s -> s instanceof ResourceDeployment && ((ResourceDeployment) s).getFormalStatus().isWritable());
         final ActionView.Builder updateDeployment = new ActionView.Builder("Update Deployment",  AzureIcons.Action.EDIT.getIconPath())
-            .title(s -> Optional.ofNullable(s).map(r -> description("arm.update_deployment.deployment", ((ResourceDeployment) r).getName())).orElse(null))
+            .title(s -> Optional.ofNullable(s).map(r -> description("arm.update_deployment_open_dialog.deployment", ((ResourceDeployment) r).getName())).orElse(null))
             .enabled(s -> s instanceof ResourceDeployment && ((ResourceDeployment) s).getFormalStatus().isWritable());
         final ActionView.Builder exportTemplate = new ActionView.Builder("Export Template File",   AzureIcons.Action.EDIT.getIconPath())
             .title(s -> Optional.ofNullable(s).map(r -> description("arm.export_template.deployment", ((ResourceDeployment) r).getName())).orElse(null))

@@ -129,8 +129,7 @@ class NotificationMessage extends IntellijAzureMessage {
                 };
                 final ActionView.Builder view = new ActionView.Builder("Select Subscription")
                         .title(ignore -> AzureString.fromString("Select subscription")).enabled(ignore -> true);
-                final Action.Id<Void> id = Action.Id.of("account.select_subscription");
-                final Action<Void> action = new Action<>(id, consumer, view);
+                final Action<Void> action = new Action<>(consumer, view);
                 action.setAuthRequired(false);
                 return new Action[]{action};
             }

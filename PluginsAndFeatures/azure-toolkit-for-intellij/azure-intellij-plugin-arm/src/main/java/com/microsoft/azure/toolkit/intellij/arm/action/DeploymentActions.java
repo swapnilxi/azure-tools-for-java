@@ -128,13 +128,11 @@ public class DeploymentActions {
     }
 
     private static Action<Void> newShowInExplorerAction(@Nonnull final File dest) {
-        final Action.Id<Void> REVEAL = Action.Id.of("common.reveal_file_in_explorer");
-        return new Action<>(REVEAL, v -> VirtualFileActions.revealInExplorer(dest), new ActionView.Builder(RevealFileAction.getActionName()));
+        return new Action<>(v -> VirtualFileActions.revealInExplorer(dest), new ActionView.Builder(RevealFileAction.getActionName()));
     }
 
     private static Action<Void> newOpenInEditorAction(@Nonnull final File dest, @Nonnull final Project project) {
-        final Action.Id<Void> OPEN = Action.Id.of("common.open_file_in_editor");
-        return new Action<>(OPEN, v -> AzureTaskManager.getInstance().runLater(() -> {
+        return new Action<>(v -> AzureTaskManager.getInstance().runLater(() -> {
             final FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
             final VirtualFile virtualFile = VfsUtil.findFileByIoFile(dest, true);
             VirtualFileActions.openFileInEditor(virtualFile, (a) -> false, () -> {
