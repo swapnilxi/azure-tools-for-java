@@ -20,13 +20,19 @@ import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.ui.EditorTextField;
+import com.intellij.ui.HyperlinkLabel;
+import com.microsoft.azure.toolkit.intellij.azuresdk.model.AzureJavaSdkArtifactExampleEntity;
+import com.microsoft.azure.toolkit.intellij.azuresdk.model.AzureJavaSdkArtifactExampleIndexEntity;
 import com.microsoft.azure.toolkit.intellij.azuresdk.model.AzureSdkArtifactEntity;
 import com.microsoft.azure.toolkit.intellij.azuresdk.model.AzureSdkArtifactEntity.DependencyType;
+import com.microsoft.azure.toolkit.intellij.azuresdk.service.AzureSdkExampleService;
+import com.microsoft.azure.toolkit.lib.common.action.AzureActionManager;
 import com.microsoft.intellij.util.GradleUtils;
 import com.microsoft.intellij.util.MavenUtils;
 import icons.GradleIcons;
 import icons.OpenapiIcons;
 import lombok.Getter;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -36,18 +42,27 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
+import static com.microsoft.azure.toolkit.ide.common.action.ResourceCommonActionsContributor.OPEN_URL;
 import static com.microsoft.azure.toolkit.intellij.azuresdk.model.AzureSdkArtifactEntity.DependencyType.GRADLE;
 import static com.microsoft.azure.toolkit.intellij.azuresdk.model.AzureSdkArtifactEntity.DependencyType.MAVEN;
 
 public class AzureSdkArtifactGroupPanel {
+    public static final String SDK_EXAMPLE_REQUEST_URL = "https://github.com/Azure/azure-rest-api-specs-examples/issues/new?assignees=&labels=&template=sample_issue_report.yml&title=%5BSample+Issue%5D";
     @Getter
     private JPanel contentPanel;
     private EditorTextField viewer;
     private JPanel artifactsPnl;
     private ActionToolbarImpl toolbar;
     private AzureSdkProjectDependencyPanel pnlAddDependencies;
+    private AzureSdkArtifactExamplePanel pnlDependency;
+    private JPanel tabDependency;
+    private JPanel tabExamples;
+    private HyperlinkLabel linkRequestExamples;
+    private JTabbedPane tabbedPane;
+    private JPanel pnlRequestExamples;
     private ButtonGroup artifactsGroup;
     private final List<AzureSdkArtifactDetailPanel> artifactPnls = new ArrayList<>();
     private AzureSdkArtifactEntity pkg;
@@ -94,6 +109,13 @@ public class AzureSdkArtifactGroupPanel {
         this.pnlAddDependencies.setPkg(pkg);
         this.pnlAddDependencies.setVersion(version);
         this.pnlAddDependencies.onSelectModule();
+
+        final AzureJavaSdkArtifactExampleIndexEntity sdkExampleIndex = AzureSdkExampleService.getSdkExampleIndex(pkg);
+        final List<AzureJavaSdkArtifactExampleEntity> examples = Optional.ofNullable(sdkExampleIndex)
+                .map(AzureJavaSdkArtifactExampleIndexEntity::getExamples).orElse(null);
+        this.pnlDependency.setExampleIndex(sdkExampleIndex);
+        this.pnlDependency.setVisible(CollectionUtils.isNotEmpty(examples));
+        this.pnlRequestExamples.setVisible(CollectionUtils.isEmpty(examples));
     }
 
     private void onDependencyTypeSelected(DependencyType type) {
@@ -151,6 +173,10 @@ public class AzureSdkArtifactGroupPanel {
         this.toolbar.setForceMinimumSize(true);
         this.toolbar.setTargetComponent(this.viewer);
         this.pnlAddDependencies = new AzureSdkProjectDependencyPanel(project);
+        this.linkRequestExamples = new HyperlinkLabel("Request Examples");
+        // todo: fill example request with http parameters
+        this.linkRequestExamples.addHyperlinkListener(e ->
+                AzureActionManager.getInstance().getAction(OPEN_URL).handle(SDK_EXAMPLE_REQUEST_URL));
     }
 
     /**
