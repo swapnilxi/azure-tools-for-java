@@ -28,9 +28,9 @@ import com.microsoft.azure.hdinsight.sdk.cluster.HDInsightAdditionalClusterDetai
 import com.microsoft.azure.toolkit.lib.common.model.Subscription
 import com.microsoft.tooling.msservices.components.DefaultLoader
 import com.microsoft.tooling.msservices.helpers.IDEHelper
-import cucumber.api.DataTable
-import cucumber.api.java.Before
-import cucumber.api.java.en.Given
+import io.cucumber.datatable.DataTable
+import io.cucumber.java.Before
+import io.cucumber.java.en.Given
 import org.assertj.core.api.Assertions.assertThat
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito

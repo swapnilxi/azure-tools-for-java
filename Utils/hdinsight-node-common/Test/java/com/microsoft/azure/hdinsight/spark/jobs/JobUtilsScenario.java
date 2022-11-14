@@ -6,10 +6,9 @@
 package com.microsoft.azure.hdinsight.spark.jobs;
 
 import com.microsoft.azure.hdinsight.spark.common.MockHttpService;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import org.apache.http.client.CredentialsProvider;
+import io.cucumber.java.Before;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 
 import java.util.List;
 

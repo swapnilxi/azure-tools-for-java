@@ -5,28 +5,28 @@
 
 package com.microsoft.azuretools.core.mvp.model.rediscache;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.ScanParams;
+
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ScanParams;
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({
-    RedisConnectionPools.class,
-})
+@RunWith(MockitoJUnitRunner.class)
 public class RedisExplorerMvpModelTest {
 
     @Mock
@@ -43,12 +43,21 @@ public class RedisExplorerMvpModelTest {
     private static final String MOCK_KEY = "key";
     private static final long MOCK_LEN = 10L;
     private static final String DATABASE_COMMAND = "databases";
+    private static MockedStatic<RedisConnectionPools> redisConnectionPoolsMockedStatic;
 
+    @BeforeClass
+    public static void setUpClass() {
+        redisConnectionPoolsMockedStatic = mockStatic(RedisConnectionPools.class);
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        Optional.ofNullable(redisConnectionPoolsMockedStatic).ifPresent(MockedStatic::close);
+    }
 
     @Before
     public void setUp() throws Exception {
-        PowerMockito.mockStatic(RedisConnectionPools.class);
-        when(RedisConnectionPools.getInstance()).thenReturn(redisConnectionPoolsMock);
+        redisConnectionPoolsMockedStatic.when(RedisConnectionPools::getInstance).thenReturn(redisConnectionPoolsMock);
         when(redisConnectionPoolsMock.getJedis(anyString(), anyString())).thenReturn(jedisMock);
     }
 
