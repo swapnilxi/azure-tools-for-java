@@ -14,7 +14,12 @@ import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.ui.SimpleListCellRenderer;
+import com.intellij.ui.components.ActionLink;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.UIUtil;
+import com.microsoft.azure.toolkit.ide.appservice.function.coretools.FunctionsCoreToolsManager;
+import com.microsoft.azure.toolkit.ide.common.action.ResourceCommonActionsContributor;
 import com.microsoft.azure.toolkit.ide.common.store.AzureConfigInitializer;
 import com.microsoft.azure.toolkit.intellij.common.AzureIntegerInput;
 import com.microsoft.azure.toolkit.intellij.common.AzureTextInput;
@@ -25,8 +30,14 @@ import com.microsoft.azure.toolkit.lib.AzureConfiguration;
 import com.microsoft.azure.toolkit.lib.auth.AzureAccount;
 import com.microsoft.azure.toolkit.lib.auth.AzureCloud;
 import com.microsoft.azure.toolkit.lib.auth.AzureEnvironmentUtils;
+import com.microsoft.azure.toolkit.lib.common.action.Action;
+import com.microsoft.azure.toolkit.lib.common.action.ActionView;
+import com.microsoft.azure.toolkit.lib.common.action.AzureActionManager;
 import com.microsoft.azure.toolkit.lib.common.form.AzureValidationInfo;
+import com.microsoft.azure.toolkit.lib.common.messager.AzureMessager;
+import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 import com.microsoft.azure.toolkit.lib.legacy.function.FunctionCoreToolsCombobox;
+import com.microsoft.azure.toolkit.lib.legacy.function.FunctionsCoreToolsFilterProvider;
 import com.microsoft.azuretools.authmanage.CommonSettings;
 import com.microsoft.azuretools.authmanage.IdeAzureAccount;
 import com.microsoft.azuretools.telemetrywrapper.EventUtil;
@@ -46,6 +57,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.intellij.uiDesigner.core.GridConstraints.FILL_NONE;
 import static com.microsoft.azure.toolkit.intellij.common.AzureBundle.message;
 import static com.microsoft.azuretools.telemetry.TelemetryConstants.ACCOUNT;
 import static com.microsoft.azuretools.telemetry.TelemetryConstants.SIGNOUT;
@@ -63,6 +75,9 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
     private AzureFileInput txtStorageExplorer;
     private AzureIntegerInput txtBatchSize;
     private AzureTextInput txtLabelFields;
+    private AzureFileInput funcCoreToolsDownloadPath;
+    private JPanel funcCoreToolsErrorPanel;
+    private JLabel funcCoreToolsDownloadPathLabel;
 
     private AzureConfiguration originalConfig;
 
@@ -99,6 +114,14 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
             }
         });
 
+        funcCoreToolsPath.addItemListener(e -> {
+            if (funcCoreToolsPath.getItems().size() <= 0) {
+                showFuncCoreToolsInstallPanel();
+            } else {
+                hideFuncCoreToolsInstallPanel();
+            }
+        });
+
         displayDescriptionForAzureEnv();
 
         final AzureConfiguration config = Azure.az().config();
@@ -121,6 +144,17 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
             return AzureValidationInfo.error("Please select correct path for storage explorer", txtStorageExplorer);
         }
         return AzureValidationInfo.ok(txtStorageExplorer);
+    }
+
+    public AzureValidationInfo validateFuncCoreToolsDownloadPath() {
+        final String path = funcCoreToolsDownloadPath.getValue();
+        if (StringUtils.isEmpty(path)) {
+            return AzureValidationInfo.ok(funcCoreToolsDownloadPath);
+        }
+        if (!FileUtil.exists(path)) {
+            return AzureValidationInfo.error("Target dir does not exist", funcCoreToolsDownloadPath);
+        }
+        return AzureValidationInfo.ok(funcCoreToolsPath);
     }
 
     public void setData(AzureConfiguration config) {
@@ -276,6 +310,49 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
         setData(originalConfig);
     }
 
+    private void showFuncCoreToolsInstallPanel() {
+        this.funcCoreToolsDownloadPath = new AzureFileInput();
+        funcCoreToolsDownloadPath.setValue(FunctionsCoreToolsManager.DEFAULT_FUNCTIONS_CORE_TOOLS_DOWNLOAD_PATH);
+        funcCoreToolsDownloadPath.addActionListener(new ComponentWithBrowseButton.BrowseFolderActionListener("Select download path for Functions Core Tools", null, funcCoreToolsDownloadPath,
+                null, FileChooserDescriptorFactory.createSingleFolderDescriptor(), TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT));
+
+        this.funcCoreToolsErrorPanel = new JPanel();
+        funcCoreToolsErrorPanel.setLayout(new GridLayoutManager(1,2));
+        final ActionLink downloadInstallBtn = new ActionLink("Download and Install", e -> {
+            final FunctionsCoreToolsManager.FuncCoreToolsDownloadListener listener = new FunctionsCoreToolsManager.FuncCoreToolsDownloadListener() {
+                @Override
+                public void onSuccess() {
+                    final Action<Object> openSettingsAction = AzureActionManager.getInstance().getAction(ResourceCommonActionsContributor.OPEN_AZURE_SETTINGS);
+                    final Action<Object> openSettingsActionInMessage = new Action<>(Action.Id.of("common.open_azure_settings_dialog"), new ActionView.Builder("Open Azure Settings")) {
+                        @Override
+                        public void handle(Object source, Object e) {
+                            AzureTaskManager.getInstance().runLater(() -> openSettingsAction.handle(null, e));
+                        }
+                    };
+                    final String INSTALL_SUCCEED_MESSAGE = "download and install functions core tools successfully.";
+                    AzureMessager.getMessager().success(INSTALL_SUCCEED_MESSAGE, "Install succeed", openSettingsActionInMessage);
+                }
+
+                @Override
+                public void onFail() {}
+            };
+            final String downloadPath = this.funcCoreToolsDownloadPath.getValue();
+            AzureTaskManager.getInstance().runInBackground("Download and Install Functions Core Tools",
+                    () -> FunctionsCoreToolsManager.getInstance().downloadReleaseWithFilter(new FunctionsCoreToolsFilterProvider(), downloadPath, listener));
+        });
+        final JLabel uninstallInfo = new JLabel("Functions Core Tools is not installed");
+        uninstallInfo.setForeground(UIUtil.getErrorForeground());
+        uninstallInfo.setIcon(AllIcons.General.Error);
+        funcCoreToolsErrorPanel.add(uninstallInfo, new GridConstraints(0, 0, 1, 1, 8, FILL_NONE, 3, 3, null, null, null, 0));
+        funcCoreToolsErrorPanel.add(downloadInstallBtn, new GridConstraints(0, 1, 1, 1, 4, FILL_NONE, 3, 3, null, null, null, 0));
+    }
+
+    private void hideFuncCoreToolsInstallPanel() {
+        this.funcCoreToolsErrorPanel.setVisible(false);
+        this.funcCoreToolsDownloadPath.setVisible(false);
+        this.funcCoreToolsDownloadPathLabel.setVisible(false);
+    }
+
     private void createUIComponents() {
         this.funcCoreToolsPath = new FunctionCoreToolsCombobox(null, false);
         this.funcCoreToolsPath.setPrototypeDisplayValue(StringUtils.EMPTY);
@@ -283,5 +360,6 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
         txtStorageExplorer.addActionListener(new ComponentWithBrowseButton.BrowseFolderActionListener("Select path for Azure Storage Explorer", null, txtStorageExplorer,
                 null, FileChooserDescriptorFactory.createSingleLocalFileDescriptor(), TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT));
         txtStorageExplorer.addValidator(this::validateStorageExplorerPath);
+        showFuncCoreToolsInstallPanel();
     }
 }

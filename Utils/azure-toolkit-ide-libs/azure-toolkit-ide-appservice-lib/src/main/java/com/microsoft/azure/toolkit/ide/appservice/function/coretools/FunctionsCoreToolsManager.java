@@ -5,6 +5,7 @@
 
 package com.microsoft.azure.toolkit.ide.appservice.function.coretools;
 
+import com.microsoft.azure.toolkit.ide.common.store.AzureConfigInitializer;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.common.messager.AzureMessager;
 import org.apache.commons.lang3.StringUtils;
@@ -22,14 +23,15 @@ public class FunctionsCoreToolsManager {
     private final Map<String, ReleaseInfo> releaseInfoCache = new HashMap<>();
     private final String AZURE_FUNCTIONS = "AzureFunctions";
     private final String INSTALL_FAILED_MESSAGE = "failed to download and install functions core tools.";
-    private final String INSTALL_SUCCEED_MESSAGE = "download and install functions core tools successfully.";
+    public final static String DEFAULT_FUNCTIONS_CORE_TOOLS_DOWNLOAD_PATH = Paths.get(System.getProperty("user.home"), ".azure-functions-core-tools").toString();
     private static final FunctionsCoreToolsManager instance = new FunctionsCoreToolsManager();
-
+    private FuncCoreToolsDownloadListener listener;
     public static FunctionsCoreToolsManager getInstance() {
         return instance;
     }
 
-    public void downloadReleaseWithFilter(ReleaseFilterProvider filterProvider, String downloadDirPath) {
+    public void downloadReleaseWithFilter(ReleaseFilterProvider filterProvider, String downloadDirPath, FuncCoreToolsDownloadListener listener) {
+        this.listener = listener;
         if (releaseInfoCache.isEmpty()) {
             cacheReleaseInfoFromFeed(filterProvider);
         }
@@ -83,9 +85,11 @@ public class FunctionsCoreToolsManager {
             unzip(tempFile, Paths.get(downloadDirPath, releaseInfo.releaseVersion).toString());
         } catch (final Exception e) {
             AzureMessager.getMessager().error(e, INSTALL_FAILED_MESSAGE);
+            Optional.ofNullable(listener).ifPresent(FuncCoreToolsDownloadListener::onFail);
         }
         Azure.az().config().setFunctionCoreToolsPath(Paths.get(downloadDirPath, releaseInfo.releaseVersion, "func.exe").toString());
-        AzureMessager.getMessager().success(INSTALL_SUCCEED_MESSAGE);
+        AzureConfigInitializer.saveAzConfig();
+        Optional.ofNullable(listener).ifPresent(FuncCoreToolsDownloadListener::onSuccess);
     }
 
     private void unzip(File zipFile, String destDirPath) throws Exception {
@@ -135,6 +139,11 @@ public class FunctionsCoreToolsManager {
             this.architectures = architectures;
             this.sizes = sizes;
         }
+    }
+
+    public static interface FuncCoreToolsDownloadListener {
+        public void onSuccess();
+        public void onFail();
     }
 
 }
