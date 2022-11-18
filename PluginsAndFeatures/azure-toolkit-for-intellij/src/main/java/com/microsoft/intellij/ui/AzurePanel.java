@@ -167,6 +167,9 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
         savePasswordComboBox.setSelectedItem(Optional.ofNullable(oldPasswordSaveType).map(Password.SaveType::valueOf).orElse(Password.SaveType.UNTIL_RESTART));
         if (StringUtils.isNotBlank(oldFuncCoreToolsPath)) {
             funcCoreToolsPath.setValue(oldFuncCoreToolsPath);
+            hideFuncCoreToolsInstallPanel();
+        } else {
+            showFuncCoreToolsInstallPanel();
         }
         if (StringUtils.isNotBlank(config.getStorageExplorerPath())) {
             txtStorageExplorer.setValue(config.getStorageExplorerPath());
@@ -311,11 +314,28 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
     }
 
     private void showFuncCoreToolsInstallPanel() {
+        this.funcCoreToolsErrorPanel.setVisible(true);
+        this.funcCoreToolsDownloadPath.setVisible(true);
+        this.funcCoreToolsDownloadPathLabel.setVisible(true);
+    }
+
+    private void hideFuncCoreToolsInstallPanel() {
+        this.funcCoreToolsErrorPanel.setVisible(false);
+        this.funcCoreToolsDownloadPath.setVisible(false);
+        this.funcCoreToolsDownloadPathLabel.setVisible(false);
+    }
+
+    private void createUIComponents() {
+        this.funcCoreToolsPath = new FunctionCoreToolsCombobox(null, false);
+        this.funcCoreToolsPath.setPrototypeDisplayValue(StringUtils.EMPTY);
+        this.txtStorageExplorer = new AzureFileInput();
+        txtStorageExplorer.addActionListener(new ComponentWithBrowseButton.BrowseFolderActionListener("Select path for Azure Storage Explorer", null, txtStorageExplorer,
+                null, FileChooserDescriptorFactory.createSingleLocalFileDescriptor(), TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT));
+        txtStorageExplorer.addValidator(this::validateStorageExplorerPath);
         this.funcCoreToolsDownloadPath = new AzureFileInput();
         funcCoreToolsDownloadPath.setValue(FunctionsCoreToolsManager.DEFAULT_FUNCTIONS_CORE_TOOLS_DOWNLOAD_PATH);
         funcCoreToolsDownloadPath.addActionListener(new ComponentWithBrowseButton.BrowseFolderActionListener("Select download path for Functions Core Tools", null, funcCoreToolsDownloadPath,
                 null, FileChooserDescriptorFactory.createSingleFolderDescriptor(), TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT));
-
         this.funcCoreToolsErrorPanel = new JPanel();
         funcCoreToolsErrorPanel.setLayout(new GridLayoutManager(1,2));
         final ActionLink downloadInstallBtn = new ActionLink("Download and Install", e -> {
@@ -345,21 +365,5 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
         uninstallInfo.setIcon(AllIcons.General.Error);
         funcCoreToolsErrorPanel.add(uninstallInfo, new GridConstraints(0, 0, 1, 1, 8, FILL_NONE, 3, 3, null, null, null, 0));
         funcCoreToolsErrorPanel.add(downloadInstallBtn, new GridConstraints(0, 1, 1, 1, 4, FILL_NONE, 3, 3, null, null, null, 0));
-    }
-
-    private void hideFuncCoreToolsInstallPanel() {
-        this.funcCoreToolsErrorPanel.setVisible(false);
-        this.funcCoreToolsDownloadPath.setVisible(false);
-        this.funcCoreToolsDownloadPathLabel.setVisible(false);
-    }
-
-    private void createUIComponents() {
-        this.funcCoreToolsPath = new FunctionCoreToolsCombobox(null, false);
-        this.funcCoreToolsPath.setPrototypeDisplayValue(StringUtils.EMPTY);
-        this.txtStorageExplorer = new AzureFileInput();
-        txtStorageExplorer.addActionListener(new ComponentWithBrowseButton.BrowseFolderActionListener("Select path for Azure Storage Explorer", null, txtStorageExplorer,
-                null, FileChooserDescriptorFactory.createSingleLocalFileDescriptor(), TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT));
-        txtStorageExplorer.addValidator(this::validateStorageExplorerPath);
-        showFuncCoreToolsInstallPanel();
     }
 }
