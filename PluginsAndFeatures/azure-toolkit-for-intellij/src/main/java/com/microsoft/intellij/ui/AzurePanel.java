@@ -7,12 +7,15 @@ package com.microsoft.intellij.ui;
 
 import com.azure.core.management.AzureEnvironment;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.wm.ex.WindowManagerEx;
 import com.intellij.ui.SimpleListCellRenderer;
 import com.intellij.ui.components.ActionLink;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -336,9 +339,14 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
         funcCoreToolsDownloadPath.setValue(FunctionsCoreToolsManager.DEFAULT_FUNCTIONS_CORE_TOOLS_DOWNLOAD_PATH);
         funcCoreToolsDownloadPath.addActionListener(new ComponentWithBrowseButton.BrowseFolderActionListener("Select download path for Functions Core Tools", null, funcCoreToolsDownloadPath,
                 null, FileChooserDescriptorFactory.createSingleFolderDescriptor(), TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT));
+        funcCoreToolsDownloadPath.addValidator(this::validateFuncCoreToolsDownloadPath);
         this.funcCoreToolsErrorPanel = new JPanel();
         funcCoreToolsErrorPanel.setLayout(new GridLayoutManager(1,2));
         final ActionLink downloadInstallBtn = new ActionLink("Download and Install", e -> {
+            final Container container = funcCoreToolsErrorPanel.getRootPane().getParent();
+            if (container instanceof JDialog) {
+                ((JDialog) container).dispose();
+            }
             final FunctionsCoreToolsManager.FuncCoreToolsDownloadListener listener = new FunctionsCoreToolsManager.FuncCoreToolsDownloadListener() {
                 @Override
                 public void onSuccess() {
