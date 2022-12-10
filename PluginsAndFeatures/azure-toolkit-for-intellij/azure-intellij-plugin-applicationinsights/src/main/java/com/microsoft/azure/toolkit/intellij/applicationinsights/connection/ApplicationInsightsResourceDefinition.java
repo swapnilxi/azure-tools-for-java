@@ -17,6 +17,7 @@ import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.applicationinsights.ApplicationInsight;
 import com.microsoft.azure.toolkit.lib.applicationinsights.AzureApplicationInsights;
 import com.microsoft.azure.toolkit.lib.common.cache.Preload;
+import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
 import com.microsoft.intellij.CommonConst;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
@@ -66,20 +67,26 @@ public class ApplicationInsightsResourceDefinition extends AzureServiceResource.
     //      2. Framework for plugin local file cache
     static class ApplicationInsightsAgentHolder {
         private static final String APPLICATION_INSIGHTS_URL =
-                "https://github.com/microsoft/ApplicationInsights-Java/releases/download/3.2.11/applicationinsights-agent-3.2.11.jar";
+            "https://github.com/microsoft/ApplicationInsights-Java/releases/download/3.2.11/applicationinsights-agent-3.2.11.jar";
         private static final File applicationInsightsLibrary =
-                new File(PluginManagerCore.getPlugin(PluginId.findId(CommonConst.PLUGIN_ID)).getPluginPath().toString(), "applicationinsights-agent.jar");
+            new File(PluginManagerCore.getPlugin(PluginId.findId(CommonConst.PLUGIN_ID)).getPluginPath().toString(), "applicationinsights-agent.jar");
 
         @Preload
         public static synchronized File getApplicationInsightsLibrary() {
             if (!applicationInsightsLibrary.exists()) {
-                try {
-                    FileUtils.copyURLToFile(new URL(APPLICATION_INSIGHTS_URL), applicationInsightsLibrary);
-                } catch (IOException e) {
-                    return null;
-                }
+                if (downloadApplicationInsightsAgent()) return null;
             }
             return applicationInsightsLibrary;
+        }
+
+        @AzureOperation("boundary/ai.download_agent")
+        private static boolean downloadApplicationInsightsAgent() {
+            try {
+                FileUtils.copyURLToFile(new URL(APPLICATION_INSIGHTS_URL), applicationInsightsLibrary);
+            } catch (IOException e) {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -17,15 +17,11 @@ public class ApplicationInsightsTaskProvider implements GuidanceTaskProvider {
     @Override
     public Task createTask(@Nonnull TaskConfig config, @Nonnull Context context) {
         final ComponentContext taskContext = new ComponentContext(config, context);
-        switch (config.getName()) {
-            case "task.application_insights.create":
-                return new CreateApplicationInsightsTask(taskContext);
-            case "task.application_insights.create_connector":
-                return new CreateApplicationInsightsResourceConnectionTask(taskContext);
-            case "task.application_insights.live_metrics":
-                return new OpenLiveMetricsTask(taskContext);
-            default:
-                return null;
-        }
+        return switch (config.getName()) {
+            case "task.application_insights.create" -> new CreateApplicationInsightsTask(taskContext);
+            case "task.application_insights.create_connector" -> new CreateApplicationInsightsResourceConnectionTask(taskContext);
+            case "task.application_insights.live_metrics" -> new OpenLiveMetricsTask(taskContext);
+            default -> null;
+        };
     }
 }
