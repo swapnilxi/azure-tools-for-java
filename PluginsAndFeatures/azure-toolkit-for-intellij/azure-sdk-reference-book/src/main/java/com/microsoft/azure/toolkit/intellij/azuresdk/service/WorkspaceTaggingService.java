@@ -13,6 +13,7 @@ import com.microsoft.azure.toolkit.intellij.azuresdk.model.AzureJavaSdkEntity;
 import com.microsoft.azure.toolkit.intellij.azuresdk.model.WorkspaceTagEntity;
 import com.microsoft.azure.toolkit.lib.common.cache.Cacheable;
 import com.microsoft.azure.toolkit.lib.common.cache.Preload;
+import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -57,6 +58,7 @@ public class WorkspaceTaggingService {
 
     @Preload
     @Cacheable(value = "workspace-tag")
+    @AzureOperation("boundary/sdk.load_workspace_tags")
     public static List<WorkspaceTagEntity> getWorkspaceTagEntities() {
         try (final InputStream stream = WorkspaceTaggingService.class.getResourceAsStream(WORKSPACE_TAG_JSON)) {
             final MappingIterator<WorkspaceTagEntity> iterator = JSON_MAPPER.readerFor(WorkspaceTagEntity.class).readValues(stream);

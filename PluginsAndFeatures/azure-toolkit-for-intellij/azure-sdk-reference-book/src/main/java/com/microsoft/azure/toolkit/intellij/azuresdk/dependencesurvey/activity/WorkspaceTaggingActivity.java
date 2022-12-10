@@ -5,12 +5,12 @@
 
 package com.microsoft.azure.toolkit.intellij.azuresdk.dependencesurvey.activity;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.microsoft.azure.toolkit.intellij.azuresdk.service.ProjectLibraryService;
 import com.microsoft.azure.toolkit.intellij.azuresdk.service.WorkspaceTaggingService;
 import com.microsoft.azure.toolkit.intellij.common.survey.CustomerSurvey;
 import com.microsoft.azure.toolkit.intellij.common.survey.CustomerSurveyManager;
+import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 import com.microsoft.azure.toolkit.lib.common.telemetry.AzureTelemeter;
 import com.microsoft.azure.toolkit.lib.common.telemetry.AzureTelemetry;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +38,7 @@ public class WorkspaceTaggingActivity {
 
     public static void runActivity(@NotNull final Project project) {
 
-        ApplicationManager.getApplication().executeOnPooledThread(() -> {
+        AzureTaskManager.getInstance().runOnPooledThread(() -> {
             try {
                 final Set<String> workspaceTags = getWorkspaceTags(project);
                 trackWorkspaceTagging(workspaceTags);

@@ -79,7 +79,7 @@ public class ModuleDependencyComboBox extends AzureComboBox<ProjectModule> {
         this.moduleSeparatorModelMap = Stream.of(mavenProjectModules, gradleProjectModules)
                 .flatMap(List::stream)
                 .sorted(Comparator.comparing(ProjectModule::getName))
-                .collect(Collectors.groupingBy(m -> getModuleSeparatorModel(m), Collectors.mapping(e -> e, Collectors.toList())));
+                .collect(Collectors.groupingBy(this::getModuleSeparatorModel, Collectors.mapping(e -> e, Collectors.toList())));
         return moduleSeparatorModelMap.entrySet().stream()
                 .sorted(Comparator.comparing(entry -> GROUPS.indexOf(entry.getKey())))
                 .flatMap(entry -> entry.getValue().stream()).collect(Collectors.toList());

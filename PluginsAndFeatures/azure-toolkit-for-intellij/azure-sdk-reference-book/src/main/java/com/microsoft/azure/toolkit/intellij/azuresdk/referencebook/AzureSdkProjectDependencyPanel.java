@@ -72,7 +72,7 @@ public class AzureSdkProjectDependencyPanel {
         lblMessageIcon.setIcon(AllIcons.General.BalloonInformation);
     }
 
-    @AzureOperation(name = "user/sdk.refresh_dependency", type = AzureOperation.Type.ACTION)
+    @AzureOperation("user/sdk.refresh_dependency")
     public void onSelectModule() {
         messager.clean();
         final ProjectModule module = cbModule.getValue();
@@ -87,7 +87,7 @@ public class AzureSdkProjectDependencyPanel {
         btnAddDependency.setText(exists ? UPDATE_DEPENDENCY : ADD_DEPENDENCY);
     }
 
-    @AzureOperation(name = "user/sdk.add_dependency", type = AzureOperation.Type.ACTION)
+    @AzureOperation("user/sdk.add_dependency")
     private void onAddDependency() {
         OperationContext.action().setTelemetryProperty("artifact", pkg.getArtifactId());
         messager.clean();

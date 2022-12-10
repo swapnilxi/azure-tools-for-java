@@ -175,7 +175,6 @@ public class AzureSdkLibraryService {
 
     @SneakyThrows(MalformedURLException.class)
     @Cacheable("sdk/packages/spring")
-    @AzureOperation(name = "to_3rd/sdk.load_spring_libs_metadata", type = AzureOperation.Type.TASK)
     private static List<AzureSdkServiceEntity> loadSpringSDKEntities() {
         final List<AzureSdkServiceEntity> remote = loadSpringSDKEntities(new URL(SPRING_SDK_METADATA_URL));
         if (CollectionUtils.isEmpty(remote)) {
@@ -186,7 +185,6 @@ public class AzureSdkLibraryService {
 
     @SneakyThrows(MalformedURLException.class)
     @Cacheable("sdk/packages")
-    @AzureOperation(name = "to_3rd/sdk.load_java_libs_meta_data", type = AzureOperation.Type.TASK)
     public static List<AzureJavaSdkEntity> loadAzureSDKEntities() {
         final List<AzureJavaSdkEntity> remote = loadAzureSDKEntities(new URL(CLIENT_MGMT_SDK_METADATA_URL));
         if (CollectionUtils.isEmpty(remote)) {
@@ -195,6 +193,7 @@ public class AzureSdkLibraryService {
         return remote;
     }
 
+    @AzureOperation(name = "boundary/sdk.load_spring_libs_metadata", type = AzureOperation.Type.TASK)
     public static List<AzureSdkServiceEntity> loadSpringSDKEntities(final URL destination) {
         try {
             final ObjectReader reader = YML_MAPPER.readerFor(AzureSdkServiceEntity.class);
@@ -206,6 +205,7 @@ public class AzureSdkLibraryService {
         return Collections.emptyList();
     }
 
+    @AzureOperation(name = "boundary/sdk.load_java_libs_meta_data", type = AzureOperation.Type.TASK)
     public static List<AzureJavaSdkEntity> loadAzureSDKEntities(final URL destination) {
         try {
             final ObjectReader reader = CSV_MAPPER.readerFor(AzureJavaSdkEntity.class).with(CsvSchema.emptySchema().withHeader());
@@ -220,7 +220,7 @@ public class AzureSdkLibraryService {
     }
 
     @Cacheable("sdk/packages/whitelist")
-    @AzureOperation(name = "to_platform/sdk.load_whitelist_metadata", type = AzureOperation.Type.TASK)
+    @AzureOperation(name = "boundary/sdk.load_whitelist_metadata", type = AzureOperation.Type.TASK)
     private static Set<String> loadAzureSDKWhitelist() {
         try {
             final URL destination = AzureSdkLibraryService.class.getResource(SDK_ALLOW_LIST_CSV);

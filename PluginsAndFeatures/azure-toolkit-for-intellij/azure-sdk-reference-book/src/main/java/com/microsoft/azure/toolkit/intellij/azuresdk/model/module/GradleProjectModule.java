@@ -6,6 +6,7 @@ package com.microsoft.azure.toolkit.intellij.azuresdk.model.module;
 
 import com.intellij.openapi.project.Project;
 import com.microsoft.azure.toolkit.intellij.azuresdk.model.AzureSdkArtifactEntity;
+import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
 import com.microsoft.intellij.util.GradleUtils;
 import icons.GradleIcons;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class GradleProjectModule implements ProjectModule {
         return GradleUtils.listGradleProjects(project).stream().map(pojo -> new GradleProjectModule(project, pojo)).collect(Collectors.toList());
     }
 
+    @AzureOperation("boundary/sdk.list_gradle_dependencies")
     public ExternalDependency getGradleDependency(final String groupId, final String artifactId) {
         final ExternalSourceSet main = externalProject.getSourceSets().get("main");
         final Collection<ExternalDependency> externalDependencies = Optional.ofNullable(main).map(ExternalSourceSet::getDependencies).orElse(Collections.emptyList());

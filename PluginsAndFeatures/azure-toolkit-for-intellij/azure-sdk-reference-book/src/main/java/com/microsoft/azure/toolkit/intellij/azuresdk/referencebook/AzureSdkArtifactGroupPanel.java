@@ -6,6 +6,7 @@
 package com.microsoft.azure.toolkit.intellij.azuresdk.referencebook;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.idea.ActionsBundle;
 import com.intellij.openapi.actionSystem.ActionPlaces;
@@ -87,7 +88,7 @@ public class AzureSdkArtifactGroupPanel {
                 this.artifactsPnl.add(artifactPnl.getContentPanel());
                 this.artifactPnls.add(artifactPnl);
             }
-            this.artifactPnls.get(0).setSelected(true);
+            this.artifactPnls.get(0).select();
         }
     }
 
@@ -170,8 +171,12 @@ public class AzureSdkArtifactGroupPanel {
         this.pnlAddDependencies = new AzureSdkProjectDependencyPanel(project);
         this.linkRequestExamples = new HyperlinkLabel("Request Examples");
         // todo: fill example request with http parameters
-        this.linkRequestExamples.addHyperlinkListener(e ->
-                AzureActionManager.getInstance().getAction(OPEN_URL).handle(SDK_EXAMPLE_REQUEST_URL));
+        this.linkRequestExamples.addHyperlinkListener(e -> requestExamples());
+    }
+
+    @AzureOperation("user/sdk.request_examples")
+    private static void requestExamples() {
+        BrowserUtil.browse(SDK_EXAMPLE_REQUEST_URL);
     }
 
     /**
@@ -193,6 +198,7 @@ public class AzureSdkArtifactGroupPanel {
             this.addAll(maven, gradle);
         }
 
+        @AzureOperation("user/sdk.select_artifact_dependency_type")
         private void setSelectedType(DependencyType type) {
             this.selectedType = type;
             this.onTypeSelected.accept(type);

@@ -7,6 +7,7 @@ package com.microsoft.azure.toolkit.intellij.azuresdk.service;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.OrderEnumerator;
+import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +24,7 @@ public class ProjectLibraryService {
     private static final Pattern PATTERN = Pattern.compile("(Gradle|Maven): (.+):(.+):(.+)");
 
     @Nonnull
+    @AzureOperation("boundary/get_project_libraries")
     public static List<ProjectLibEntity> getProjectLibraries(@Nonnull Project project) {
         if (project.isDisposed()) {
             return Collections.emptyList();

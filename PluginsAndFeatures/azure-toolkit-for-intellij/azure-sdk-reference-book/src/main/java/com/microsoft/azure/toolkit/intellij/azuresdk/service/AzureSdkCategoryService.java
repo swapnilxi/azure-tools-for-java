@@ -31,7 +31,7 @@ public class AzureSdkCategoryService {
     private static final String SERVICE_CATEGORY_CSV = "/service-category.csv";
 
     @Cacheable(value = "azure-sdk-category-entities")
-    @AzureOperation(name = "to_platform/sdk.load_category_data", type = AzureOperation.Type.TASK, target = AzureOperation.Target.PLATFORM)
+    @AzureOperation(name = "boundary/sdk.load_category_data", type = AzureOperation.Type.TASK, target = AzureOperation.Target.PLATFORM)
     public static Map<String, List<AzureSdkCategoryEntity>> loadAzureSDKCategories() {
         try (final InputStream stream = AzureSdkCategoryService.class.getResourceAsStream(SERVICE_CATEGORY_CSV)) {
             // read

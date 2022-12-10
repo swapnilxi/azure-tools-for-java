@@ -29,6 +29,7 @@ import com.microsoft.azure.toolkit.intellij.azuresdk.model.module.MavenProjectMo
 import com.microsoft.azure.toolkit.lib.common.bundle.AzureString;
 import com.microsoft.azure.toolkit.lib.common.exception.AzureToolkitRuntimeException;
 import com.microsoft.azure.toolkit.lib.common.messager.AzureMessager;
+import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
 import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 import org.apache.commons.lang3.StringUtils;
 import org.gradle.util.GradleVersion;
@@ -62,6 +63,7 @@ import java.util.stream.Collectors;
 
 public class DependencyUtils {
 
+    @AzureOperation("boundary/sdk.update_maven_dependency")
     public static void addOrUpdateMavenDependency(@Nonnull final MavenProjectModule module, @Nonnull final AzureSdkArtifactEntity entity, @Nonnull final String version) {
         final Project project = module.getProject();
         final MavenProject mavenProject = module.getMavenProject();
@@ -83,15 +85,9 @@ public class DependencyUtils {
             }
             FileEditorManager.getInstance(project).openFile(file.getVirtualFile(), true, false);
         });
-        final AzureString message = module.isDependencyExists(entity) ?
-                AzureString.format("Library (%s) in project (%s) has been upgraded to (%s)", entity.getArtifactId(), module.getName(), version) :
-                AzureString.format("Library (%s) with version (%s) has been added to project (%s)", entity.getArtifactId(), version, module.getName());
-        final AnAction action = ActionManager.getInstance().getAction("Maven.Reimport");
-        final DataContext context = dataId -> CommonDataKeys.PROJECT.getName().equals(dataId) ? project : null;
-        AzureTaskManager.getInstance().runLater(() -> ActionUtil.invokeAction(action, context, "AzureSdkReferenceBook", null, null));
-        AzureMessager.getMessager().info(message);
     }
 
+    @AzureOperation("boundary/sdk.update_gradle_dependency")
     public static void addOrUpdateGradleDependency(@Nonnull final GradleProjectModule module, @Nonnull final AzureSdkArtifactEntity entity, @Nonnull final String version) {
         final Project project = module.getProject();
         final ExternalProject externalProject = module.getExternalProject();

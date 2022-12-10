@@ -7,11 +7,8 @@ package com.microsoft.azure.toolkit.intellij.azuresdk.referencebook;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
-import com.microsoft.azure.toolkit.lib.common.messager.ExceptionNotification;
 import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
 import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 import org.apache.commons.lang3.StringUtils;
@@ -23,13 +20,11 @@ public class OpenReferenceBookAction extends AnAction implements DumbAware {
     public static final String ID = "user/AzureToolkit.OpenSdkReferenceBook";
 
     @Override
-    @ExceptionNotification
-    @AzureOperation(name = "user/sdk.open_reference_book", type = AzureOperation.Type.ACTION)
     public void actionPerformed(@Nonnull final AnActionEvent event) {
-        final Module module = event.getData(LangDataKeys.MODULE);
         openSdkReferenceBook(event.getProject(), null);
     }
 
+    @AzureOperation("user/sdk.open_reference_book")
     public static void openSdkReferenceBook(final @Nullable Project project, @Nullable final String feature) {
         AzureTaskManager.getInstance().runLater(() -> {
             final AzureSdkReferenceBookDialog dialog = new AzureSdkReferenceBookDialog(project);

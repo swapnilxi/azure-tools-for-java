@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
  */
 public class AzureSdkEnforcer {
 
+    @AzureOperation("platform/sdk.warn_deprecated_libs")
     public static void enforce(Project project) {
         final Map<String, AzureJavaSdkEntity> allDeprecatedAzureLibs = AzureSdkLibraryService.getDeprecatedAzureSDKEntities().stream()
                 .collect(Collectors.toMap(AzureJavaSdkEntity::getPackageName, e -> e));
@@ -51,7 +52,6 @@ public class AzureSdkEnforcer {
         }
     }
 
-    @AzureOperation(name = "user/sdk.warn_deprecated_libs", type = AzureOperation.Type.DEFAULT)
     private static void warnDeprecatedLibs(@AzureTelemetry.Property List<? extends AzureJavaSdkEntity> deprecatedLibs) {
         final String message = buildMessage(deprecatedLibs);
         final AzureActionManager am = AzureActionManager.getInstance();

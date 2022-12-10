@@ -280,6 +280,7 @@ public class AzureSdkTreePanel implements TextDocumentListenerAdapter {
         }
 
         @Override
+        @AzureOperation("user/sdk.reload_features")
         public final void actionPerformed(@NotNull final AnActionEvent e) {
             this.loading = true;
             ActivityTracker.getInstance().inc();

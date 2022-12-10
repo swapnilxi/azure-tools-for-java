@@ -21,7 +21,6 @@ import java.util.Optional;
 
 public class ExampleComboBox extends AzureComboBox<AzureJavaSdkArtifactExampleEntity> {
     public final static AzureJavaSdkArtifactExampleEntity NONE = new AzureJavaSdkArtifactExampleEntity();
-    private final Project project;
     @Getter
     private AzureJavaSdkArtifactExamplesEntity entity;
 
@@ -31,7 +30,6 @@ public class ExampleComboBox extends AzureComboBox<AzureJavaSdkArtifactExampleEn
 
     public ExampleComboBox(Project project) {
         super();
-        this.project = project;
     }
 
     public void setEntity(@Nonnull final AzureJavaSdkArtifactExamplesEntity entity) {
@@ -44,7 +42,7 @@ public class ExampleComboBox extends AzureComboBox<AzureJavaSdkArtifactExampleEn
     protected List<AzureJavaSdkArtifactExampleEntity> loadItems() {
         return Optional.ofNullable(entity)
                 .map(AzureJavaSdkArtifactExamplesEntity::getExamples)
-                .orElseGet(() -> Arrays.asList(NONE));
+                .orElseGet(() -> Collections.singletonList(NONE));
     }
 
     @Nonnull

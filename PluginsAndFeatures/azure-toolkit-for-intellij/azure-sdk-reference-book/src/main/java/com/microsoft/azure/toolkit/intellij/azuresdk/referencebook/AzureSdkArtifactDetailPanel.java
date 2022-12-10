@@ -11,6 +11,7 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.components.DropDownLink;
 import com.intellij.ui.components.JBRadioButton;
 import com.microsoft.azure.toolkit.intellij.azuresdk.model.AzureSdkArtifactEntity;
+import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -48,9 +49,21 @@ public class AzureSdkArtifactDetailPanel {
     private void initEventListeners() {
         this.artifactId.addActionListener((e) -> {
             if (this.artifactId.isSelected()) {
-                this.setSelected(true);
+                this.select();
             }
         });
+    }
+
+    @AzureOperation("user/select_artifact")
+    public void select() {
+        this.artifactId.setSelected(true);
+        this.onArtifactOrVersionSelected.accept(this.artifact, this.version.getSelectedItem());
+    }
+
+    @AzureOperation("user/select_artifact_version")
+    private void selectArtifactVersion(String v) {
+        this.setLinks(this.artifact.getLinks(v));
+        this.onArtifactOrVersionSelected.accept(this.artifact, this.version.getSelectedItem());
     }
 
     private void setLinks(@Nonnull final Map<String, String> links) {
@@ -78,17 +91,11 @@ public class AzureSdkArtifactDetailPanel {
         }
         final DropDownLink<String> versionSelector = new DropDownLink<>(versions.get(0), versions, (String v) -> {
             if (this.artifactId.isSelected()) {
-                this.setLinks(this.artifact.getLinks(v));
-                this.onArtifactOrVersionSelected.accept(this.artifact, this.version.getSelectedItem());
+                selectArtifactVersion(v);
             }
         }, true);
         versionSelector.setForeground(JBColor.BLACK);
         return versionSelector;
-    }
-
-    public void setSelected(boolean selected) {
-        this.artifactId.setSelected(selected);
-        this.onArtifactOrVersionSelected.accept(this.artifact, this.version.getSelectedItem());
     }
 
     public void attachToGroup(ButtonGroup group) {
