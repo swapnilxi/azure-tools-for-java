@@ -23,7 +23,7 @@ public class AzureCallbackUrlTable extends ListTableWithButtons<StringBuilder> i
     public AzureCallbackUrlTable() {
         super();
         getTableView().getEmptyText().setText(MessageBundle.message("dialog.identity.ad.register_app.callback_url.emptyText"));
-        this.setValidator(this::doValidateValue);
+        this.addValidator(this::doValidateValue);
         this.setRequired(true);
     }
 

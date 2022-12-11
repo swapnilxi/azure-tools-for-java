@@ -54,13 +54,17 @@ public class RegisterApplicationAction extends AnAction {
 
     @Override
     @ExceptionNotification
-    @AzureOperation(name = "user/aad.register_application", type = AzureOperation.Type.ACTION)
     public void actionPerformed(@Nonnull AnActionEvent e) {
         var project = e.getProject();
         if (project == null || project.isDisposed()) {
             return;
         }
 
+        openRegisterApplicationDialog(project);
+    }
+
+    @AzureOperation(name = "user/aad.open_registration_dialog", type = AzureOperation.Type.ACTION)
+    private static void openRegisterApplicationDialog(Project project) {
         // Show dialog to enter the application data, then create in background after user confirmed
         var dialog = new RegisterApplicationInAzureAdDialog(project);
         if (dialog.showAndGet()) {
@@ -68,12 +72,17 @@ public class RegisterApplicationAction extends AnAction {
             if (subscription == null) {
                 return;
             }
-
-            var task = new RegisterApplicationTask(project, dialog.getForm().getValue(), subscription);
-            var title = MessageBundle.message("action.azure.aad.registerApp.registeringApplication");
-
-            AzureTaskManager.getInstance().runInBackground(title, task);
+            final ApplicationRegistrationModel model = dialog.getForm().getValue();
+            registerApplication(project, model, subscription);
         }
+    }
+
+    @AzureOperation("user/aad.register_application")
+    private static void registerApplication(Project project, ApplicationRegistrationModel model, Subscription subscription) {
+        var task = new RegisterApplicationTask(project, model, subscription);
+        var title = MessageBundle.message("action.azure.aad.registerApp.registeringApplication");
+
+        AzureTaskManager.getInstance().runInBackground(title, task);
     }
 
     /**
@@ -134,7 +143,7 @@ public class RegisterApplicationAction extends AnAction {
             showApplicationTemplateDialog(subscription, application);
         }
 
-        @AzureOperation(name = "to_user/aad.show_application_template", type = AzureOperation.Type.TASK)
+        @AzureOperation(name = "ui/aad.show_application_template", type = AzureOperation.Type.TASK)
         private void showApplicationTemplateDialog(@Nonnull Subscription subscription, @Nonnull Application application) {
             AzureTaskManager.getInstance().runLater(() -> {
                 new AzureApplicationTemplateDialog(project, new SubscriptionApplicationPair(subscription, application)).show();

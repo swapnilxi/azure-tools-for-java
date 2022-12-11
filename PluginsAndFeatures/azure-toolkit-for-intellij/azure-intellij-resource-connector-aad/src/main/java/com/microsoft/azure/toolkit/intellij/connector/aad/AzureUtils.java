@@ -9,6 +9,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.microsoft.azure.toolkit.lib.Azure;
 import com.microsoft.azure.toolkit.lib.auth.AzureAccount;
 import com.microsoft.azure.toolkit.lib.common.model.Subscription;
+import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
 import com.microsoft.graph.authentication.TokenCredentialAuthProvider;
 import com.microsoft.graph.models.Application;
 import com.microsoft.graph.models.ApplicationAddPasswordParameterSet;
@@ -37,6 +38,7 @@ final class AzureUtils {
      * @throws com.microsoft.graph.core.ClientException If the credentials could not be created
      */
     @Nonnull
+    @AzureOperation("azure/aad.create_client_secret")
     static PasswordCredential createApplicationClientSecret(@Nonnull GraphServiceClient<Request> client,
                                                             @Nonnull Application application) {
         assert application.id != null;
@@ -56,6 +58,7 @@ final class AzureUtils {
      * @return The list of applications
      */
     @Nonnull
+    @AzureOperation("azure/aad.load_domains")
     static List<Domain> loadDomains(@Nonnull GraphServiceClient<Request> client) {
         LOG.debug("loading list of domains");
 
@@ -89,6 +92,7 @@ final class AzureUtils {
      * @return The list of applications
      */
     @Nonnull
+    @AzureOperation("azure/aad.load_applications")
     static List<Application> loadApplications(@Nonnull GraphServiceClient<Request> client) {
         LOG.debug("loading list of applications");
 
@@ -115,6 +119,7 @@ final class AzureUtils {
         return applications;
     }
 
+    @AzureOperation(value = "azure/aad.create_graph_client.subscription", params = "subscription.getName()")
     static GraphServiceClient<Request> createGraphClient(@Nonnull Subscription subscription) {
         LOG.debug("Creating new graph client for subscription " + subscription.getName());
 
