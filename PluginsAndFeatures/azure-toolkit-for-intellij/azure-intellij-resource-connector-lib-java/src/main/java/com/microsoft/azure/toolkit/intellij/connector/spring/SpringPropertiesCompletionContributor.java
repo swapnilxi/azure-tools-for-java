@@ -36,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -46,6 +47,7 @@ public class SpringPropertiesCompletionContributor extends CompletionContributor
         super();
         extend(CompletionType.BASIC, PlatformPatterns.psiElement(), new CompletionProvider<>() {
             @Override
+            @AzureOperation("platform/connector.add_completions")
             public void addCompletions(@Nonnull CompletionParameters parameters, @Nonnull ProcessingContext context, @Nonnull CompletionResultSet resultSet) {
                 final Module module = ModuleUtil.findModuleForFile(parameters.getOriginalFile());
                 if (module == null) {
@@ -74,7 +76,7 @@ public class SpringPropertiesCompletionContributor extends CompletionContributor
 
         @Override
         @ExceptionNotification
-        @AzureOperation(name = "user/connector.insert_spring_properties", type = AzureOperation.Type.ACTION)
+        @AzureOperation("platform/connector.handle_insert")
         public void handleInsert(@Nonnull InsertionContext context, @Nonnull LookupElement lookupElement) {
             final Project project = context.getProject();
             final Module module = ModuleUtil.findModuleForFile(context.getFile().getVirtualFile(), project);
@@ -86,6 +88,7 @@ public class SpringPropertiesCompletionContributor extends CompletionContributor
             }
         }
 
+        @AzureOperation("user/connector.open_connector_dialog_from_code_completion")
         private void createAndInsert(Module module, @Nonnull InsertionContext context) {
             final Project project = context.getProject();
             AzureTaskManager.getInstance().runLater(() -> {
@@ -93,16 +96,27 @@ public class SpringPropertiesCompletionContributor extends CompletionContributor
                 dialog.setConsumer(new ModuleResource(module.getName()));
                 dialog.setResourceDefinition(definition);
                 if (dialog.showAndGet()) {
-                    final Connection<?, ?> c = dialog.getValue();
-                    WriteCommandAction.runWriteCommandAction(project, () -> this.insert(c, context));
+                    createAndInsert(context, project, dialog);
                 } else {
-                    WriteCommandAction.runWriteCommandAction(project, () -> {
-                        EditorModificationUtil.insertStringAtCaret(context.getEditor(), "=", true);
-                    });
+                    cancelCreation(context, project);
                 }
             });
         }
 
+        @AzureOperation("user/connector.cancel_connection_from_code_completion")
+        private static void cancelCreation(@NotNull InsertionContext context, Project project) {
+            WriteCommandAction.runWriteCommandAction(project, () -> {
+                EditorModificationUtil.insertStringAtCaret(context.getEditor(), "=", true);
+            });
+        }
+
+        @AzureOperation("user/connector.submit_connection_from_code_completion")
+        private void createAndInsert(@NotNull InsertionContext context, Project project, ConnectorDialog dialog) {
+            final Connection<?, ?> c = dialog.getValue();
+            WriteCommandAction.runWriteCommandAction(project, () -> this.insert(c, context));
+        }
+
+        @AzureOperation("user/connector.insert_spring_properties_from_code_completion")
         private void insert(Connection<?, ?> c, @Nonnull InsertionContext context) {
             final List<Pair<String, String>> properties = SpringSupported.getProperties(c);
             final StringBuilder result = new StringBuilder("=").append(properties.get(0).getValue()).append(StringUtils.LF);

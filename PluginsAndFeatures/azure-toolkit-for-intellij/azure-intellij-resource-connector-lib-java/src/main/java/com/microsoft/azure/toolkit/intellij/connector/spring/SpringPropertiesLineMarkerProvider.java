@@ -51,16 +51,16 @@ public class SpringPropertiesLineMarkerProvider implements LineMarkerProvider {
         }
         final ImmutablePair<String, String> keyProp = new ImmutablePair<>(propKey, propVal);
         final List<Connection<?, ?>> connections = element.getProject().getService(ConnectionManager.class)
-                .getConnectionsByConsumerId(module.getName());
+            .getConnectionsByConsumerId(module.getName());
         for (final Connection<?, ?> connection : connections) {
             final List<Pair<String, String>> properties = SpringSupported.getProperties(connection);
             if (!properties.isEmpty() && properties.get(0).equals(keyProp)) {
                 final Resource<?> r = connection.getResource();
                 return new LineMarkerInfo<>(element, element.getTextRange(),
-                        IntelliJAzureIcons.getIcon(AzureIcons.Connector.CONNECT),
-                        element2 -> String.format("%s (%s)", r.getName(), r.getDefinition().getTitle()),
-                        new SpringDatasourceNavigationHandler(r),
-                        GutterIconRenderer.Alignment.LEFT, () -> "");
+                    IntelliJAzureIcons.getIcon(AzureIcons.Connector.CONNECT),
+                    element2 -> String.format("%s (%s)", r.getName(), r.getDefinition().getTitle()),
+                    new SpringDatasourceNavigationHandler(r),
+                    GutterIconRenderer.Alignment.LEFT, () -> "");
             }
         }
         return null;
@@ -72,7 +72,7 @@ public class SpringPropertiesLineMarkerProvider implements LineMarkerProvider {
 
         @Override
         @ExceptionNotification
-        @AzureOperation(name = "user/connector.navigate_from_line_marker", type = AzureOperation.Type.ACTION)
+        @AzureOperation("user/connector.navigate_from_line_marker")
         public void navigate(MouseEvent mouseEvent, PsiElement psiElement) {
             final DataContext context = DataManager.getInstance().getDataContext(mouseEvent.getComponent());
             final AnActionEvent event = AnActionEvent.createFromInputEvent(mouseEvent, ActionPlaces.EDITOR_GUTTER, null, context);
