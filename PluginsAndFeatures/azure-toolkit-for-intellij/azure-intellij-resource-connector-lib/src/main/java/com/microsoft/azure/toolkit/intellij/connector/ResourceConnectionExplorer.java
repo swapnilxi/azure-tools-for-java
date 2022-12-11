@@ -68,10 +68,8 @@ public class ResourceConnectionExplorer extends Tree {
         public RootNode(@Nonnull Project project) {
             super(project);
             final MessageBusConnection connection = project.getMessageBus().connect();
-            connection.subscribe(CONNECTIONS_REFRESHED, () -> this.view().refreshChildren());
-            connection.subscribe(CONNECTION_CHANGED, (p, conn, action) -> {
-                this.view().refreshChildren();
-            });
+            connection.subscribe(CONNECTIONS_REFRESHED, (ConnectionTopics.ConnectionsRefreshed)(() -> this.view().refreshChildren()));
+            connection.subscribe(CONNECTION_CHANGED, (ConnectionTopics.ConnectionChanged) (p, conn, action) -> this.view().refreshChildren());
         }
     }
 
@@ -118,7 +116,7 @@ public class ResourceConnectionExplorer extends Tree {
         @AzureOperation(name = "platform/connector.initialize_explorer", type = AzureOperation.Type.SERVICE)
         public void createToolWindowContent(final Project project, final com.intellij.openapi.wm.ToolWindow toolWindow) {
             final ToolWindow myToolWindow = new ToolWindow(project);
-            final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+            final ContentFactory contentFactory = ContentFactory.getInstance();
             final Content content = contentFactory.createContent(myToolWindow, "", false);
             toolWindow.getContentManager().addContent(content);
         }
@@ -127,7 +125,7 @@ public class ResourceConnectionExplorer extends Tree {
     public static class ToolWindowOpener implements ConnectionTopics.ConnectionChanged {
         @Override
         @ExceptionNotification
-        @AzureOperation(name = "user/connector.open_explorer", type = AzureOperation.Type.TASK)
+        @AzureOperation(name = "boundary/connector.activate_explorer_on_connection_changed", type = AzureOperation.Type.TASK)
         public void connectionChanged(Project project, Connection<?, ?> connection, ConnectionTopics.Action change) {
             final com.intellij.openapi.wm.ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow(ToolWindowFactory.ID);
             assert toolWindow != null;

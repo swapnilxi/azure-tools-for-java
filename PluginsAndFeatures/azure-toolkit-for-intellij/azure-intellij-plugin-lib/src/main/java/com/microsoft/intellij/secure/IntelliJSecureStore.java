@@ -8,6 +8,7 @@ package com.microsoft.intellij.secure;
 import com.intellij.credentialStore.CredentialAttributes;
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.microsoft.azure.toolkit.ide.common.store.ISecureStore;
+import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
@@ -48,17 +49,20 @@ public class IntelliJSecureStore implements ISecureStore {
     }
 
     @Override
+    @AzureOperation("boundary/common.save_password_in_secure_store")
     public void savePassword(@Nonnull String serviceName, @Nullable String key, @Nullable String userName, @Nonnull String password) {
         passwordSafe.setPassword(makeKey(serviceName, key, userName), password);
     }
 
     @Override
     @Nullable
+    @AzureOperation("boundary/common.load_password_from_secure_store")
     public String loadPassword(@Nonnull String serviceName, @Nullable String key, @Nullable String userName) {
         return passwordSafe.getPassword(makeKey(serviceName, key, userName));
     }
 
     @Override
+    @AzureOperation("boundary/common.remove_password_in_secure_store")
     public void forgetPassword(@Nonnull String serviceName, @Nullable String key, @Nullable String userName) {
         CredentialAttributes oldKey = StringUtils.isNotBlank(userName) ? new CredentialAttributes(key, userName) :
             new CredentialAttributes(key);

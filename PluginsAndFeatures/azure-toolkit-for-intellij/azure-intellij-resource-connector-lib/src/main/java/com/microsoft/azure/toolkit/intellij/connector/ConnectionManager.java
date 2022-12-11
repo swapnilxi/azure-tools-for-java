@@ -119,6 +119,7 @@ public interface ConnectionManager extends PersistentStateComponent<Element> {
 
         @Override
         @ExceptionNotification
+        @AzureOperation("platform/connector.persist_resource_connections")
         public Element getState() {
             final Element connectionsEle = new Element(ELEMENT_NAME_CONNECTIONS);
             for (final Connection<?, ?> connection : this.connections) {
@@ -132,7 +133,7 @@ public interface ConnectionManager extends PersistentStateComponent<Element> {
 
         @Override
         @ExceptionNotification
-        @AzureOperation(name = "platform/connector.load_resource_connections", type = AzureOperation.Type.TASK)
+        @AzureOperation("platform/connector.load_resource_connections")
         public void loadState(@NotNull Element connectionsEle) {
             for (final Element connectionEle : connectionsEle.getChildren()) {
                 final String name = connectionEle.getAttributeValue(FIELD_TYPE);

@@ -18,6 +18,8 @@ import com.microsoft.azure.toolkit.intellij.common.AzureFormJPanel;
 import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
 import com.microsoft.azure.toolkit.lib.common.messager.AzureMessager;
+import com.microsoft.azure.toolkit.lib.common.operation.AzureOperation;
+import com.microsoft.azure.toolkit.lib.common.operation.OperationContext;
 import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 import lombok.Getter;
 
@@ -65,7 +67,7 @@ public class ConnectorDialog extends AzureDialog<Connection<?, ?>> implements Az
     @Override
     protected void init() {
         super.init();
-        this.setOkActionListener(this::saveConnection);
+        this.setOkActionListener(this::trySaveConnection);
         this.consumerTypeSelector.addItemListener(this::onResourceOrConsumerTypeChanged);
         this.resourceTypeSelector.addItemListener(this::onResourceOrConsumerTypeChanged);
         final var resourceDefinitions = ResourceManager.getDefinitions(RESOURCE);
@@ -106,27 +108,30 @@ public class ConnectorDialog extends AzureDialog<Connection<?, ?>> implements Az
         return false;
     }
 
-    protected void saveConnection(Connection<?, ?> connection) {
+    protected void trySaveConnection(Connection<?, ?> connection) {
         if (connection == null) {
             return;
         }
-        AzureTaskManager.getInstance().runLater(() -> {
-            this.close(0);
-            final Resource<?> resource = connection.getResource();
-            final Resource<?> consumer = connection.getConsumer();
-            final ConnectionManager connectionManager = this.project.getService(ConnectionManager.class);
-            final ResourceManager resourceManager = ServiceManager.getService(ResourceManager.class);
-            if (connection.validate(this.project)) {
-                resourceManager.addResource(resource);
-                resourceManager.addResource(consumer);
-                connectionManager.addConnection(connection);
-                final String message = String.format("The connection between %s and %s has been successfully created.",
-                    resource.getName(), consumer.getName());
-                AzureMessager.getMessager().success(message);
-                project.getMessageBus().syncPublisher(ConnectionTopics.CONNECTION_CHANGED).connectionChanged(project, connection, ConnectionTopics.Action.ADD);
+        AzureTaskManager.getInstance().runLater(() -> saveConnection(connection));
+    }
 
-            }
-        });
+    @AzureOperation("user/connector.save_connection")
+    private void saveConnection(Connection<?, ?> connection) {
+        this.close(0);
+        final Resource<?> resource = connection.getResource();
+        final Resource<?> consumer = connection.getConsumer();
+        OperationContext.current().setTelemetryProperty("resourceType", resource.getDefinition().getName());
+        final ConnectionManager connectionManager = this.project.getService(ConnectionManager.class);
+        final ResourceManager resourceManager = ServiceManager.getService(ResourceManager.class);
+        if (connection.validate(this.project)) {
+            resourceManager.addResource(resource);
+            resourceManager.addResource(consumer);
+            connectionManager.addConnection(connection);
+            final String message = String.format("The connection between %s and %s has been successfully created.",
+                resource.getName(), consumer.getName());
+            AzureMessager.getMessager().success(message);
+            project.getMessageBus().syncPublisher(ConnectionTopics.CONNECTION_CHANGED).connectionChanged(project, connection, ConnectionTopics.Action.ADD);
+        }
     }
 
     @Override
@@ -210,6 +215,7 @@ public class ConnectorDialog extends AzureDialog<Connection<?, ?>> implements Az
         }
     }
 
+    @AzureOperation("ui/connector.update_resource_panel")
     private AzureFormJPanel<?> updatePanel(ResourceDefinition<?> definition, JPanel container) {
         final GridConstraints constraints = new GridConstraints();
         constraints.setFill(GridConstraints.FILL_BOTH);

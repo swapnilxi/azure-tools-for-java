@@ -105,7 +105,7 @@ public interface ResourceManager {
 
         @Override
         @ExceptionNotification
-        @AzureOperation(name = "user/connector.load_connection_resources", type = AzureOperation.Type.SERVICE)
+        @AzureOperation(name = "platform/connector.load_connection_resources", type = AzureOperation.Type.SERVICE)
         public void loadState(@Nonnull Element resourcesEle) {
             for (final Element resourceEle : resourcesEle.getChildren()) {
                 final String resDef = resourceEle.getAttributeValue(ATTR_DEFINITION);

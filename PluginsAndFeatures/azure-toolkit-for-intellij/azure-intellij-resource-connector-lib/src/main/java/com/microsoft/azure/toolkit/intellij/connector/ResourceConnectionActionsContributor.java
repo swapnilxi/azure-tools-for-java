@@ -97,6 +97,7 @@ public class ResourceConnectionActionsContributor implements IActionsContributor
         return ResourceCommonActionsContributor.INITIALIZE_ORDER + 1;
     }
 
+    @AzureOperation("user/connector.open_connector_dialog")
     private void openDialog(@Nullable Resource<?> r, @Nullable Resource<?> c, Project project) {
         AzureTaskManager.getInstance().runLater(() -> {
             final ConnectorDialog dialog = new ConnectorDialog(project);
@@ -106,6 +107,7 @@ public class ResourceConnectionActionsContributor implements IActionsContributor
         });
     }
 
+    @AzureOperation("user/connector.open_connector_dialog")
     private void openDialog(Connection<?, ?> c, Project project) {
         AzureTaskManager.getInstance().runLater(() -> {
             final ConnectorDialog dialog = new ConnectorDialog(project);

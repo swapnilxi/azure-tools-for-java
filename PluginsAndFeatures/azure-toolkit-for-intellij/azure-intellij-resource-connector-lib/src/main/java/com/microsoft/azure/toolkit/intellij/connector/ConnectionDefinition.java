@@ -97,8 +97,7 @@ public class ConnectionDefinition<R, C> {
     }
 
     /**
-     * validate if the given {@code connection} is valid, e.g. check if
-     * the given connection had already been created and persisted.
+     * validate if the given {@code connection} is valid.
      *
      * @return false if the give {@code connection} is not valid and should not
      * be created and persisted.

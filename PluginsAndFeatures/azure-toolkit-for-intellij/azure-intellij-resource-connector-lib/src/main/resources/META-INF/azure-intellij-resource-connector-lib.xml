@@ -26,7 +26,7 @@
     <actions>
         <action
             id="AzureToolkit.ConnectToAzureResource"
-            class="com.microsoft.azure.toolkit.intellij.connector.ModuleConnectorAction"
+            class="com.microsoft.azure.toolkit.intellij.connector.actions.OpenConnectorDialogOnModuleAction"
             text="Connect to Azure Resource"
             icon="/icons/connector/connect.svg"
             description="To consume azure resources in your project"/>
