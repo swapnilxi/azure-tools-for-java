@@ -38,9 +38,9 @@ public class CreateContainerAppAction {
         });
     }
 
-    @AzureOperation(name = "user/containerapps.create_app.app", params = {"config.getName()"})
+    @AzureOperation(name = "user/containerapps.create_container_app.app", params = {"config.getName()"})
     private static void doCreate(final ContainerAppDraft.Config config, final Project project) {
-        final AzureString title = OperationBundle.description("user/containerapps.create_app.app", config.getName());
+        final AzureString title = OperationBundle.description("user/containerapps.create_container_app.app", config.getName());
         AzureTaskManager.getInstance().runInBackground(title, () -> {
             final ResourceGroup rg = config.getResourceGroup();
             if (rg.isDraftForCreating()) {

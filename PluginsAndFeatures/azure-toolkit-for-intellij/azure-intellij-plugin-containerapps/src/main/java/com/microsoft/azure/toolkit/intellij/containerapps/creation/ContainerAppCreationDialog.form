@@ -3,7 +3,7 @@
   <grid id="57ab1" binding="pnlRoot" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="543" height="379"/>
+      <xy x="20" y="20" width="543" height="414"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -33,7 +33,7 @@
                   <font/>
                   <text value="Project Details"/>
                   <titleFont style="1"/>
-                  <toolTipText value="Select the subscription to manage deployed resources and costs. Use resource groups like folders to organize and manage all your resources. "/>
+                  <toolTipText value=""/>
                 </properties>
               </component>
               <vspacer id="d5b87">
@@ -43,7 +43,7 @@
               </vspacer>
               <component id="a5824" class="javax.swing.JLabel" binding="lblSubscription">
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
                     <minimum-size width="-1" height="24"/>
                     <preferred-size width="-1" height="24"/>
                     <maximum-size width="-1" height="24"/>
@@ -64,7 +64,7 @@
               </component>
               <component id="c6436" class="javax.swing.JLabel" binding="lblResourceGroup">
                 <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
                     <minimum-size width="-1" height="24"/>
                     <preferred-size width="-1" height="24"/>
                     <maximum-size width="-1" height="24"/>
@@ -96,14 +96,14 @@
               </component>
               <component id="9ef9d" class="javax.swing.JLabel" binding="lblContainerAppName">
                 <constraints>
-                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="true">
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="true">
                     <minimum-size width="-1" height="24"/>
                     <preferred-size width="-1" height="24"/>
                     <maximum-size width="-1" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
-                  <text value="Container App Name:"/>
+                  <text value="Name:"/>
                 </properties>
               </component>
               <component id="924e3" class="com.microsoft.azure.toolkit.intellij.common.AzureTextInput" binding="txtContainerAppName">
@@ -114,7 +114,7 @@
               </component>
               <component id="578e7" class="javax.swing.JLabel" binding="lblRegion">
                 <constraints>
-                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
                     <minimum-size width="-1" height="24"/>
                     <preferred-size width="-1" height="24"/>
                     <maximum-size width="-1" height="24"/>
@@ -132,14 +132,14 @@
               </component>
               <component id="ead2" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
                     <minimum-size width="-1" height="24"/>
                     <preferred-size width="-1" height="24"/>
                     <maximum-size width="-1" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
-                  <text value="Container Apps Environment:"/>
+                  <text value="Environment:"/>
                 </properties>
               </component>
               <component id="ad919" class="com.microsoft.azure.toolkit.intellij.containerapps.component.AzureContainerAppsEnvironmentComboBox" binding="cbEnvironment" custom-create="true">
@@ -150,7 +150,7 @@
               </component>
             </children>
           </grid>
-          <grid id="5f0d6" layout-manager="GridLayoutManager" row-count="10" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="5f0d6" layout-manager="GridLayoutManager" row-count="9" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="App Settings"/>
@@ -171,15 +171,15 @@
               </component>
               <vspacer id="4008">
                 <constraints>
-                  <grid row="9" column="0" row-span="1" col-span="4" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="8" column="0" row-span="1" col-span="4" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                 </constraints>
               </vspacer>
               <component id="f91a4" class="javax.swing.JLabel" binding="lblIngress">
                 <constraints>
-                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="80" height="24"/>
-                    <preferred-size width="80" height="24"/>
-                    <maximum-size width="80" height="24"/>
+                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                    <minimum-size width="100" height="24"/>
+                    <preferred-size width="100" height="24"/>
+                    <maximum-size width="100" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
@@ -188,54 +188,15 @@
               </component>
               <component id="fe34" class="javax.swing.JLabel" binding="lblExternalTraffic">
                 <constraints>
-                  <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="80" height="24"/>
-                    <preferred-size width="80" height="24"/>
-                    <maximum-size width="80" height="24"/>
+                  <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                    <minimum-size width="100" height="24"/>
+                    <preferred-size width="100" height="24"/>
+                    <maximum-size width="100" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
-                  <text value="Traffic:"/>
+                  <text value="External Traffic:"/>
                 </properties>
-              </component>
-              <component id="2f663" class="javax.swing.JRadioButton" binding="rdoEnableExternalTraffic">
-                <constraints>
-                  <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Enable External Traffic"/>
-                </properties>
-              </component>
-              <component id="9dc55" class="javax.swing.JRadioButton" binding="rdoDisableExternalTraffic">
-                <constraints>
-                  <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Disable External Traffic"/>
-                </properties>
-              </component>
-              <hspacer id="e80c">
-                <constraints>
-                  <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-              </hspacer>
-              <component id="1efce" class="javax.swing.JLabel" binding="lblTargetPort">
-                <constraints>
-                  <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="80" height="24"/>
-                    <preferred-size width="80" height="24"/>
-                    <maximum-size width="80" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Target Port:"/>
-                </properties>
-              </component>
-              <component id="36c40" class="com.microsoft.azure.toolkit.intellij.common.AzureIntegerInput" binding="txtTargetPort">
-                <constraints>
-                  <grid row="8" column="1" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
               </component>
               <component id="63a51" class="com.intellij.ui.TitledSeparator" binding="titleContainerDetails">
                 <constraints>
@@ -250,27 +211,19 @@
               </component>
               <nested-form id="35947" form-file="com/microsoft/azure/toolkit/intellij/containerapps/component/ImageForm.form" binding="pnlContainer">
                 <constraints>
-                  <grid row="3" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="3" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
                 </constraints>
               </nested-form>
               <component id="83ae" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="80" height="24"/>
-                    <preferred-size width="80" height="24"/>
-                    <maximum-size width="80" height="24"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                    <minimum-size width="100" height="24"/>
+                    <preferred-size width="100" height="24"/>
+                    <maximum-size width="100" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
                   <text value="Quickstart:"/>
-                </properties>
-              </component>
-              <component id="ec853" class="javax.swing.JCheckBox" binding="chkUseQuickStart">
-                <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Use Quick Start Image"/>
                 </properties>
               </component>
               <component id="bafea" class="javax.swing.JCheckBox" binding="chkIngress">
@@ -294,10 +247,10 @@
               </component>
               <component id="efa8" class="javax.swing.JLabel" binding="lblEnv">
                 <constraints>
-                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="80" height="24"/>
-                    <preferred-size width="80" height="24"/>
-                    <maximum-size width="80" height="24"/>
+                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+                    <minimum-size width="100" height="24"/>
+                    <preferred-size width="100" height="24"/>
+                    <maximum-size width="100" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
@@ -310,6 +263,50 @@
                 </constraints>
                 <properties/>
               </component>
+              <component id="3e93d" class="javax.swing.JCheckBox" binding="chkExternalTraffic">
+                <constraints>
+                  <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Enabled"/>
+                </properties>
+              </component>
+              <component id="fe205" class="com.intellij.ui.JBIntSpinner" binding="txtTargetPort" custom-create="true">
+                <constraints>
+                  <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="1efce" class="javax.swing.JLabel" binding="lblTargetPort">
+                <constraints>
+                  <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                    <minimum-size width="100" height="24"/>
+                    <preferred-size width="100" height="24"/>
+                    <maximum-size width="100" height="24"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <text value="Target Port:"/>
+                </properties>
+              </component>
+              <grid id="12e8c" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="ec853" class="javax.swing.JCheckBox" binding="chkUseQuickStart">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Use Quick Start Image"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
             </children>
           </grid>
         </children>
