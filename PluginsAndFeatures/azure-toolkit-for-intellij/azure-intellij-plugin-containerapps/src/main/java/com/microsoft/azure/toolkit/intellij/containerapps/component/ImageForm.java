@@ -105,4 +105,9 @@ public class ImageForm implements AzureFormJPanel<ContainerAppDraft.ImageConfig>
             }
         }
     }
+
+    @Override
+    public void setVisible(boolean visible) {
+        Optional.ofNullable(getContentPanel()).ifPresent(panel -> panel.setVisible(visible));
+    }
 }

@@ -145,6 +145,7 @@ public class ContainerAppCreationDialog extends AzureDialog<ContainerAppDraft.Co
         // toggle app settings enable status
         this.titleContainerDetails.setEnabled(!useQuickStartImage);
         this.pnlContainer.setEnabled(!useQuickStartImage);
+        this.pnlContainer.setVisible(!useQuickStartImage);
         this.titleIngress.setEnabled(!useQuickStartImage);
         this.lblIngress.setEnabled(!useQuickStartImage);
         this.chkIngress.setEnabled(!useQuickStartImage);
