@@ -75,7 +75,7 @@ public class ContainerAppsActionsContributor implements IActionsContributor {
             .withHandler((s, e) -> {
                 if (!s.isIngressEnabled() || StringUtils.isBlank(s.getIngressFqdn())) {
                     final Action<AzResourceBase> action = new Action<>(SHOW_PROPERTIES)
-                        .withLabel("Open Properties editor")
+                        .withLabel("Open Properties Editor")
                         .withHandler(r -> am.getAction(ResourceCommonActionsContributor.SHOW_PROPERTIES).handle(s, e));
                     AzureMessager.getMessager().warning("Ingress is not enabled for this container app.", null, action);
                 } else {
