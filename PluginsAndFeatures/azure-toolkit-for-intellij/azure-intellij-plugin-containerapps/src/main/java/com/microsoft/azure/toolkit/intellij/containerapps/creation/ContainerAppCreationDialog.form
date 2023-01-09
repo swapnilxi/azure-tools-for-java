@@ -44,14 +44,13 @@
               <component id="a5824" class="javax.swing.JLabel" binding="lblSubscription">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="-1" height="24"/>
-                    <preferred-size width="-1" height="24"/>
-                    <maximum-size width="-1" height="24"/>
+                    <minimum-size width="100" height="24"/>
+                    <preferred-size width="100" height="24"/>
+                    <maximum-size width="100" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
                   <horizontalTextPosition value="10"/>
-                  <icon value="general/contextHelp.png"/>
                   <text value="Subscription:"/>
                   <toolTipText value="All resources in an Azure subscription are billed together."/>
                 </properties>
@@ -65,14 +64,13 @@
               <component id="c6436" class="javax.swing.JLabel" binding="lblResourceGroup">
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="-1" height="24"/>
-                    <preferred-size width="-1" height="24"/>
-                    <maximum-size width="-1" height="24"/>
+                    <minimum-size width="100" height="24"/>
+                    <preferred-size width="100" height="24"/>
+                    <maximum-size width="100" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
                   <horizontalTextPosition value="10"/>
-                  <icon value="general/contextHelp.png"/>
                   <text value="Resource Group:"/>
                   <toolTipText value="A resource group is a collection of resources that share the same lifecycle, permissions, and policies."/>
                 </properties>
@@ -97,9 +95,9 @@
               <component id="9ef9d" class="javax.swing.JLabel" binding="lblContainerAppName">
                 <constraints>
                   <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="true">
-                    <minimum-size width="-1" height="24"/>
-                    <preferred-size width="-1" height="24"/>
-                    <maximum-size width="-1" height="24"/>
+                    <minimum-size width="100" height="24"/>
+                    <preferred-size width="100" height="24"/>
+                    <maximum-size width="100" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
@@ -115,9 +113,9 @@
               <component id="578e7" class="javax.swing.JLabel" binding="lblRegion">
                 <constraints>
                   <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="-1" height="24"/>
-                    <preferred-size width="-1" height="24"/>
-                    <maximum-size width="-1" height="24"/>
+                    <minimum-size width="100" height="24"/>
+                    <preferred-size width="100" height="24"/>
+                    <maximum-size width="100" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
@@ -133,9 +131,9 @@
               <component id="ead2" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="-1" height="24"/>
-                    <preferred-size width="-1" height="24"/>
-                    <maximum-size width="-1" height="24"/>
+                    <minimum-size width="100" height="24"/>
+                    <preferred-size width="100" height="24"/>
+                    <maximum-size width="100" height="24"/>
                   </grid>
                 </constraints>
                 <properties>
