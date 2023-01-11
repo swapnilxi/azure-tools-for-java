@@ -11,11 +11,16 @@ import com.microsoft.azure.toolkit.ide.common.component.AzureResourceLabelView;
 import com.microsoft.azure.toolkit.ide.common.component.AzureServiceLabelView;
 import com.microsoft.azure.toolkit.ide.common.component.Node;
 import com.microsoft.azure.toolkit.ide.common.icon.AzureIcons;
+import com.microsoft.azure.toolkit.lib.common.event.AzureEvent;
 import com.microsoft.azure.toolkit.lib.common.model.AzResourceBase;
+import com.microsoft.azure.toolkit.lib.common.task.AzureTaskManager;
 import com.microsoft.azure.toolkit.lib.containerapps.AzureContainerApps;
+import com.microsoft.azure.toolkit.lib.containerapps.AzureContainerAppsServiceSubscription;
 import com.microsoft.azure.toolkit.lib.containerapps.containerapp.ContainerApp;
 import com.microsoft.azure.toolkit.lib.containerapps.containerapp.Revision;
 import com.microsoft.azure.toolkit.lib.containerapps.environment.ContainerAppsEnvironment;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,7 +62,7 @@ public class ContainerAppsNodeProvider implements IExplorerNodeProvider {
         } else if (data instanceof ContainerAppsEnvironment) {
             final ContainerAppsEnvironment environment = (ContainerAppsEnvironment) data;
             return new Node<>(environment)
-                    .view(new AzureResourceLabelView<>(environment))
+                    .view(new ContainerAppsEnvironmentLabelView(environment))
                     .inlineAction(ResourceCommonActionsContributor.PIN)
                     .addChildren(ContainerAppsEnvironment::listContainerApps, (app, envNode) -> this.createNode(app, envNode, manager))
                     .actions(ContainerAppsActionsContributor.ENVIRONMENT_ACTIONS);
@@ -86,5 +91,23 @@ public class ContainerAppsNodeProvider implements IExplorerNodeProvider {
         final Revision latestRevision = revision.getParent().getLatestRevision();
         final boolean latest = Objects.equals(latestRevision, revision);
         return String.format(latest ? "%s (Latest)" : "%s", revision.isActive() ? "Active" : "Inactive");
+    }
+
+    static class ContainerAppsEnvironmentLabelView extends AzureResourceLabelView<ContainerAppsEnvironment> {
+        public ContainerAppsEnvironmentLabelView(@NotNull ContainerAppsEnvironment resource) {
+            super(resource);
+        }
+
+        @Override
+        public void onEvent(AzureEvent event) {
+            final String type = event.getType();
+            final Object source = event.getSource();
+            if (source instanceof AzureContainerAppsServiceSubscription
+                    && StringUtils.equals(((AzureContainerAppsServiceSubscription) source).getSubscriptionId(), resource.getSubscriptionId())
+                    && StringUtils.equals(type, "resource.children_changed.resource")) {
+                AzureTaskManager.getInstance().runLater(() -> this.refreshChildren(true));
+            }
+            super.onEvent(event);
+        }
     }
 }
