@@ -9,6 +9,7 @@ import com.azure.resourcemanager.appcontainers.models.EnvironmentVar;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.JBIntSpinner;
 import com.intellij.ui.TitledSeparator;
+import com.microsoft.applicationinsights.web.dependencies.apachecommons.lang3.ObjectUtils;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.lang3.StringUtils;
 import com.microsoft.azure.toolkit.intellij.common.AzureDialog;
 import com.microsoft.azure.toolkit.intellij.common.AzureTextInput;
@@ -22,10 +23,12 @@ import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
 import com.microsoft.azure.toolkit.lib.common.form.AzureValidationInfo;
 import com.microsoft.azure.toolkit.lib.common.model.Availability;
+import com.microsoft.azure.toolkit.lib.common.model.Region;
 import com.microsoft.azure.toolkit.lib.common.model.Subscription;
 import com.microsoft.azure.toolkit.lib.containerapps.containerapp.ContainerAppDraft;
 import com.microsoft.azure.toolkit.lib.containerapps.environment.ContainerAppsEnvironment;
 import com.microsoft.azure.toolkit.lib.containerapps.model.IngressConfig;
+import com.microsoft.azure.toolkit.lib.resource.ResourceGroup;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -67,6 +70,8 @@ public class ContainerAppCreationDialog extends AzureDialog<ContainerAppDraft.Co
     private EnvironmentVariablesTextFieldWithBrowseButton inputEnv;
     private JLabel lblEnv;
     private JCheckBox chkExternalTraffic;
+    private ImageForm pnlAppSettingsContainer;
+    private JCheckBox chkAppSettingsUseQuickStart;
 
     public static final ContainerAppDraft.ImageConfig QUICK_START_IMAGE = ContainerAppDraft.ImageConfig.builder()
             .fullImageName("mcr.microsoft.com/azuredocs/containerapps-helloworld:latest").environmentVariables(new ArrayList<>()).build();
@@ -93,8 +98,17 @@ public class ContainerAppCreationDialog extends AzureDialog<ContainerAppDraft.Co
         this.txtTargetPort.setMin(1);
         this.txtTargetPort.setMax(65535);
         this.cbSubscription.addItemListener(this::onSubscriptionChanged);
-        this.cbResourceGroup.addItemListener(e -> this.txtContainerAppName.validateValueAsync()); // trigger validation after resource group changed
+        this.cbRegion.addItemListener(this::onRegionChanged); // trigger validation after resource group changed
+        this.cbResourceGroup.addItemListener(this::onResourceGroupChanged);
         this.chkUseQuickStart.addItemListener(e -> this.onSelectQuickImage(chkUseQuickStart.isSelected()));
+        this.chkAppSettingsUseQuickStart.addItemListener(e -> {
+            if (chkUseQuickStart.isSelected() != chkAppSettingsUseQuickStart.isSelected()) {
+                chkUseQuickStart.setSelected(chkAppSettingsUseQuickStart.isSelected());
+            }
+        });
+        this.pnlContainer.addValueChangeListenerToAllComponents(config -> mergeContainerConfiguration(pnlAppSettingsContainer, config));
+        this.pnlAppSettingsContainer.addValueChangeListenerToAllComponents(config -> mergeContainerConfiguration(pnlContainer, config));
+
         this.chkIngress.addItemListener(e -> this.onSelectIngress(chkIngress.isSelected()));
 
         this.chkUseQuickStart.setSelected(true);
@@ -105,11 +119,42 @@ public class ContainerAppCreationDialog extends AzureDialog<ContainerAppDraft.Co
         this.lblRegion.setLabelFor(cbRegion);
     }
 
+    private void mergeContainerConfiguration(final ImageForm target, final ContainerAppDraft.ImageConfig value) {
+        try {
+            final ContainerAppDraft.ImageConfig targetValue = target.getValue();
+            if (ObjectUtils.allNotNull(targetValue, value)) {
+                if (!Objects.equals(targetValue.getContainerRegistry(), value.getContainerRegistry()) ||
+                        !Objects.equals(targetValue.getFullImageName(), value.getFullImageName())) {
+                    target.setValue(value);
+                }
+            }
+        } catch (final RuntimeException e) {
+            // swallow exception as required parameters may be null
+            target.setValue(value);
+        }
+    }
+
+    private void onResourceGroupChanged(ItemEvent itemEvent) {
+        if (itemEvent.getStateChange() == ItemEvent.SELECTED && itemEvent.getItem() instanceof ResourceGroup) {
+            final ResourceGroup resourceGroup = (ResourceGroup) itemEvent.getItem();
+            this.cbEnvironment.setResourceGroup(resourceGroup);
+        }
+    }
+
+    private void onRegionChanged(ItemEvent itemEvent) {
+        if (itemEvent.getStateChange() == ItemEvent.SELECTED && itemEvent.getItem() instanceof Region) {
+            final Region region = (Region) itemEvent.getItem();
+            this.txtContainerAppName.validateValueAsync();
+            this.cbEnvironment.setRegion(region);
+        }
+    }
+
     private void onSubscriptionChanged(ItemEvent itemEvent) {
         if (itemEvent.getStateChange() == ItemEvent.SELECTED && itemEvent.getItem() instanceof Subscription) {
             final Subscription subscription = (Subscription) itemEvent.getItem();
             this.cbResourceGroup.setSubscription(subscription);
             this.cbRegion.setSubscription(subscription);
+            this.cbEnvironment.setSubscription(subscription);
         }
     }
 
@@ -142,10 +187,15 @@ public class ContainerAppCreationDialog extends AzureDialog<ContainerAppDraft.Co
             // set ingress config
             this.setIngressConfig(QUICK_START_INGRESS);
         }
+        if (useQuickStartImage != chkAppSettingsUseQuickStart.isSelected()) {
+            chkAppSettingsUseQuickStart.setSelected(useQuickStartImage);
+        }
         // toggle app settings enable status
         this.titleContainerDetails.setEnabled(!useQuickStartImage);
         this.pnlContainer.setEnabled(!useQuickStartImage);
         this.pnlContainer.setVisible(!useQuickStartImage);
+        this.pnlAppSettingsContainer.setEnabled(!useQuickStartImage);
+        this.pnlAppSettingsContainer.setVisible(!useQuickStartImage);
         this.titleIngress.setEnabled(!useQuickStartImage);
         this.lblIngress.setEnabled(!useQuickStartImage);
         this.chkIngress.setEnabled(!useQuickStartImage);

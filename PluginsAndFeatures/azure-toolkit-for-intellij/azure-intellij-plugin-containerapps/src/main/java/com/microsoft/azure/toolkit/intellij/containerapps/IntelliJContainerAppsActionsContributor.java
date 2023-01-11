@@ -40,6 +40,7 @@ public class IntelliJContainerAppsActionsContributor implements IActionsContribu
         am.registerHandler(ContainerAppsActionsContributor.UPDATE_IMAGE, UpdateContainerImageAction::openUpdateDialog);
 
         am.registerHandler(ContainerAppsActionsContributor.CREATE_CONTAINER_APP,
+                (ContainerAppsEnvironment r, AnActionEvent e) -> r.getFormalStatus().isConnected(),
                 (ContainerAppsEnvironment r, AnActionEvent e) -> CreateContainerAppAction.create(e.getProject(), getContainerAppDefaultConfig(r, null)));
         am.registerHandler(ContainerAppsActionsContributor.GROUP_CREATE_CONTAINER_APP,
                 (ResourceGroup r, AnActionEvent e) -> CreateContainerAppAction.create(e.getProject(), getContainerAppDefaultConfig(null, r)));
@@ -56,9 +57,6 @@ public class IntelliJContainerAppsActionsContributor implements IActionsContribu
         final Subscription historySub = CacheManager.getUsageHistory(Subscription.class).peek(subs::contains);
         final Subscription sub = Optional.ofNullable(historySub).orElseGet(() -> subs.get(0));
         result.setSubscription(sub);
-        final List<Region> regions = az(AzureAccount.class).listRegions(sub.getId());
-        final Region historyRegion = CacheManager.getUsageHistory(Region.class).peek(regions::contains);
-        result.setRegion(historyRegion);
         final ContainerAppsEnvironment cae = Optional.ofNullable(o).orElseGet(() -> CacheManager.getUsageHistory(ContainerAppsEnvironment.class)
                 .peek(r -> r.getSubscriptionId().equals(sub.getId())));
         result.setEnvironment(cae);
@@ -67,6 +65,10 @@ public class IntelliJContainerAppsActionsContributor implements IActionsContribu
         final ResourceGroup rg = Optional.ofNullable(resourceGroup).orElseGet(() ->
                 Optional.ofNullable(cae).map(ContainerAppsEnvironment::getResourceGroup).orElse(historyRg));
         result.setResourceGroup(rg);
+        final List<Region> regions = az(AzureAccount.class).listRegions(sub.getId());
+        final Region historyRegion = CacheManager.getUsageHistory(Region.class).peek(regions::contains);
+        final Region region = Optional.ofNullable(cae).map(ContainerAppsEnvironment::getRegion).orElse(historyRegion);
+        result.setRegion(region);
         return result;
     }
 

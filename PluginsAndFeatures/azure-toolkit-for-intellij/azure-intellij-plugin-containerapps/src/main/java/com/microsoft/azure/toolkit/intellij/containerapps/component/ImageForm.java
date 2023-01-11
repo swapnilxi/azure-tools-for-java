@@ -8,6 +8,7 @@ package com.microsoft.azure.toolkit.intellij.containerapps.component;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.microsoft.azure.toolkit.intellij.common.AzureFormJPanel;
 import com.microsoft.azure.toolkit.intellij.common.AzureFormPanel;
+import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
 import com.microsoft.azure.toolkit.lib.containerapps.containerapp.ContainerAppDraft;
 import com.microsoft.azure.toolkit.lib.containerregistry.ContainerRegistry;
@@ -16,9 +17,12 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 
 public class ImageForm implements AzureFormJPanel<ContainerAppDraft.ImageConfig> {
     private JPanel pnlRoot;
@@ -26,7 +30,7 @@ public class ImageForm implements AzureFormJPanel<ContainerAppDraft.ImageConfig>
     private JPanel formImageContainer;
     private JLabel lblRegistryType;
     private AzureFormJPanel<ContainerAppDraft.ImageConfig> formImage;
-
+    private List<AzureValueChangeListener<ContainerAppDraft.ImageConfig>> listeners = new ArrayList<>();
     public ImageForm() {
         super();
         $$$setupUI$$$(); // tell IntelliJ to call createUIComponents() here.
@@ -78,6 +82,7 @@ public class ImageForm implements AzureFormJPanel<ContainerAppDraft.ImageConfig>
         this.formImageContainer.revalidate();
         this.formImageContainer.repaint();
         this.formImage = newFormImage;
+        this.listeners.forEach(this::addValueChangeListenerToAllComponents);
         return newFormImage;
     }
 
@@ -109,5 +114,20 @@ public class ImageForm implements AzureFormJPanel<ContainerAppDraft.ImageConfig>
     @Override
     public void setVisible(boolean visible) {
         Optional.ofNullable(getContentPanel()).ifPresent(panel -> panel.setVisible(visible));
+    }
+
+    public void addValueChangeListenerToAllComponents(final AzureValueChangeListener<ContainerAppDraft.ImageConfig> listener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+        final Queue<AzureFormInput<?>> inputs = new ArrayDeque<>();
+        inputs.add(formImage);
+        while (!inputs.isEmpty()) {
+            final AzureFormInput<?> input = inputs.poll();
+            input.addValueChangedListener(ignore -> listener.accept(this.getValue()));
+            if (input instanceof AzureForm<?>) {
+                ((AzureForm<?>) input).getInputs().forEach(inputs::add);
+            }
+        }
     }
 }

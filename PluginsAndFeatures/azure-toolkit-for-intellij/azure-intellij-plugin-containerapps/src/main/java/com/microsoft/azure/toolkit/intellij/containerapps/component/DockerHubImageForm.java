@@ -61,7 +61,10 @@ public class DockerHubImageForm implements AzureFormJPanel<ContainerAppDraft.Ima
 
     @Override
     public void setValue(final ContainerAppDraft.ImageConfig config) {
-        this.txtImage.setValue(config.getFullImageName());
+        final String fullImageName = config.getFullImageName();
+        final String dockerImageName = StringUtils.startsWith(fullImageName, "docker.io/library/") ? StringUtils.removeStart(fullImageName, "docker.io/library/")
+                : StringUtils.startsWith(fullImageName, "docker.io/") ? StringUtils.removeStart(fullImageName, "docker.io/") : fullImageName;
+        this.txtImage.setValue(dockerImageName);
     }
 
     @Override
