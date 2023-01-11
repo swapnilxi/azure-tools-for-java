@@ -1,329 +1,257 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.microsoft.azure.toolkit.intellij.containerapps.creation.ContainerAppCreationDialog">
-  <grid id="57ab1" binding="pnlRoot" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="57ab1" binding="pnlRoot" layout-manager="GridLayoutManager" row-count="15" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="543" height="426"/>
+      <xy x="20" y="20" width="543" height="558"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <tabbedpane id="f81ca" binding="pnlAppSettings">
+      <component id="2f998" class="com.intellij.ui.TitledSeparator">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="200" height="200"/>
+          <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font/>
+          <text value="Project Details"/>
+          <titleFont style="1"/>
+          <toolTipText value=""/>
+        </properties>
+      </component>
+      <vspacer id="d5b87">
+        <constraints>
+          <grid row="14" column="0" row-span="1" col-span="4" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <component id="a5824" class="javax.swing.JLabel" binding="lblSubscription">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="100" height="24"/>
+            <preferred-size width="100" height="24"/>
+            <maximum-size width="100" height="24"/>
           </grid>
         </constraints>
+        <properties>
+          <horizontalTextPosition value="10"/>
+          <text value="Subscription:"/>
+          <toolTipText value="All resources in an Azure subscription are billed together."/>
+        </properties>
+      </component>
+      <component id="25bc6" class="com.microsoft.azure.toolkit.intellij.common.component.SubscriptionComboBox" binding="cbSubscription">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
         <properties/>
-        <border type="none"/>
-        <children>
-          <grid id="ef2dd" binding="pnlBasic" layout-manager="GridLayoutManager" row-count="11" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints>
-              <tabbedpane title="Basic"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children>
-              <component id="2f998" class="com.intellij.ui.TitledSeparator">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font/>
-                  <text value="Project Details"/>
-                  <titleFont style="1"/>
-                  <toolTipText value=""/>
-                </properties>
-              </component>
-              <vspacer id="d5b87">
-                <constraints>
-                  <grid row="10" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-                </constraints>
-              </vspacer>
-              <component id="a5824" class="javax.swing.JLabel" binding="lblSubscription">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <horizontalTextPosition value="10"/>
-                  <text value="Subscription:"/>
-                  <toolTipText value="All resources in an Azure subscription are billed together."/>
-                </properties>
-              </component>
-              <component id="25bc6" class="com.microsoft.azure.toolkit.intellij.common.component.SubscriptionComboBox" binding="cbSubscription">
-                <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
-              </component>
-              <component id="c6436" class="javax.swing.JLabel" binding="lblResourceGroup">
-                <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <horizontalTextPosition value="10"/>
-                  <text value="Resource Group:"/>
-                  <toolTipText value="A resource group is a collection of resources that share the same lifecycle, permissions, and policies."/>
-                </properties>
-              </component>
-              <component id="b02f5" class="com.microsoft.azure.toolkit.intellij.common.component.resourcegroup.ResourceGroupComboBox" binding="cbResourceGroup">
-                <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
-              </component>
-              <component id="62716" class="com.intellij.ui.TitledSeparator">
-                <constraints>
-                  <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font/>
-                  <text value="Container Apps Environment "/>
-                  <titleFont style="1"/>
-                  <toolTipText value="The environment is a secure boundary around one or more container apps that can communicate with each other and share a virtual network, logging, and Dapr. Container Apps Pricing"/>
-                </properties>
-              </component>
-              <component id="9ef9d" class="javax.swing.JLabel" binding="lblContainerAppName">
-                <constraints>
-                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="true">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Name:"/>
-                </properties>
-              </component>
-              <component id="924e3" class="com.microsoft.azure.toolkit.intellij.common.AzureTextInput" binding="txtContainerAppName">
-                <constraints>
-                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
-              </component>
-              <component id="578e7" class="javax.swing.JLabel" binding="lblRegion">
-                <constraints>
-                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Region:"/>
-                </properties>
-              </component>
-              <component id="e934b" class="com.microsoft.azure.toolkit.intellij.common.component.RegionComboBox" binding="cbRegion">
-                <constraints>
-                  <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
-              </component>
-              <component id="ead2" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Environment:"/>
-                </properties>
-              </component>
-              <component id="ad919" class="com.microsoft.azure.toolkit.intellij.containerapps.component.AzureContainerAppsEnvironmentComboBox" binding="cbEnvironment" custom-create="true">
-                <constraints>
-                  <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
-              </component>
-              <component id="8fe4d" class="com.intellij.ui.TitledSeparator">
-                <constraints>
-                  <grid row="7" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font/>
-                  <text value="Image"/>
-                  <titleFont style="1"/>
-                  <toolTipText value=""/>
-                </properties>
-              </component>
-              <nested-form id="c8b19" form-file="com/microsoft/azure/toolkit/intellij/containerapps/component/ImageForm.form" binding="pnlContainer">
-                <constraints>
-                  <grid row="9" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
-                </constraints>
-              </nested-form>
-              <component id="d582" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Quickstart:"/>
-                </properties>
-              </component>
-              <component id="2cac4" class="javax.swing.JCheckBox" binding="chkUseQuickStart">
-                <constraints>
-                  <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Use Quick Start Image"/>
-                </properties>
-              </component>
-            </children>
+      </component>
+      <component id="c6436" class="javax.swing.JLabel" binding="lblResourceGroup">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="100" height="24"/>
+            <preferred-size width="100" height="24"/>
+            <maximum-size width="100" height="24"/>
           </grid>
-          <grid id="5f0d6" layout-manager="GridLayoutManager" row-count="8" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints>
-              <tabbedpane title="App Settings"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children>
-              <component id="e2d0" class="com.intellij.ui.TitledSeparator" binding="titleIngress">
-                <constraints>
-                  <grid row="4" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font/>
-                  <text value="Application Ingress Settings "/>
-                  <titleFont style="1"/>
-                  <toolTipText value=""/>
-                </properties>
-              </component>
-              <vspacer id="4008">
-                <constraints>
-                  <grid row="7" column="0" row-span="1" col-span="4" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-                </constraints>
-              </vspacer>
-              <component id="f91a4" class="javax.swing.JLabel" binding="lblIngress">
-                <constraints>
-                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Ingress:"/>
-                </properties>
-              </component>
-              <component id="fe34" class="javax.swing.JLabel" binding="lblExternalTraffic">
-                <constraints>
-                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="External Traffic:"/>
-                </properties>
-              </component>
-              <component id="63a51" class="com.intellij.ui.TitledSeparator" binding="titleContainerDetails">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font/>
-                  <text value="App Settings"/>
-                  <titleFont style="1"/>
-                  <toolTipText value=""/>
-                </properties>
-              </component>
-              <component id="bafea" class="javax.swing.JCheckBox" binding="chkIngress">
-                <constraints>
-                  <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Enabled"/>
-                </properties>
-              </component>
-              <component id="efa8" class="javax.swing.JLabel" binding="lblEnv">
-                <constraints>
-                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Env Variables:"/>
-                </properties>
-              </component>
-              <component id="ae5c" class="com.microsoft.azure.toolkit.intellij.common.EnvironmentVariablesTextFieldWithBrowseButton" binding="inputEnv">
-                <constraints>
-                  <grid row="3" column="1" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
-              </component>
-              <component id="3e93d" class="javax.swing.JCheckBox" binding="chkExternalTraffic">
-                <constraints>
-                  <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Enabled"/>
-                </properties>
-              </component>
-              <component id="fe205" class="com.intellij.ui.JBIntSpinner" binding="txtTargetPort" custom-create="true">
-                <constraints>
-                  <grid row="6" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
-              </component>
-              <component id="1efce" class="javax.swing.JLabel" binding="lblTargetPort">
-                <constraints>
-                  <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Target Port:"/>
-                </properties>
-              </component>
-              <component id="224e" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
-                    <minimum-size width="100" height="24"/>
-                    <preferred-size width="100" height="24"/>
-                    <maximum-size width="100" height="24"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <text value="Quickstart:"/>
-                </properties>
-              </component>
-              <component id="2a3f2" class="javax.swing.JCheckBox" binding="chkAppSettingsUseQuickStart">
-                <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Use Quick Start Image"/>
-                </properties>
-              </component>
-              <nested-form id="6c56e" form-file="com/microsoft/azure/toolkit/intellij/containerapps/component/ImageForm.form" binding="pnlAppSettingsContainer">
-                <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
-                </constraints>
-              </nested-form>
-            </children>
+        </constraints>
+        <properties>
+          <horizontalTextPosition value="10"/>
+          <text value="Resource Group:"/>
+          <toolTipText value="A resource group is a collection of resources that share the same lifecycle, permissions, and policies."/>
+        </properties>
+      </component>
+      <component id="b02f5" class="com.microsoft.azure.toolkit.intellij.common.component.resourcegroup.ResourceGroupComboBox" binding="cbResourceGroup">
+        <constraints>
+          <grid row="2" column="1" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="62716" class="com.intellij.ui.TitledSeparator">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font/>
+          <text value="Container Apps Environment "/>
+          <titleFont style="1"/>
+          <toolTipText value="The environment is a secure boundary around one or more container apps that can communicate with each other and share a virtual network, logging, and Dapr. Container Apps Pricing"/>
+        </properties>
+      </component>
+      <component id="9ef9d" class="javax.swing.JLabel" binding="lblContainerAppName">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="true">
+            <minimum-size width="100" height="24"/>
+            <preferred-size width="100" height="24"/>
+            <maximum-size width="100" height="24"/>
           </grid>
-        </children>
-      </tabbedpane>
+        </constraints>
+        <properties>
+          <text value="Name:"/>
+        </properties>
+      </component>
+      <component id="924e3" class="com.microsoft.azure.toolkit.intellij.common.AzureTextInput" binding="txtContainerAppName">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="578e7" class="javax.swing.JLabel" binding="lblRegion">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="100" height="24"/>
+            <preferred-size width="100" height="24"/>
+            <maximum-size width="100" height="24"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Region:"/>
+        </properties>
+      </component>
+      <component id="e934b" class="com.microsoft.azure.toolkit.intellij.common.component.RegionComboBox" binding="cbRegion">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="ead2" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="100" height="24"/>
+            <preferred-size width="100" height="24"/>
+            <maximum-size width="100" height="24"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Environment:"/>
+        </properties>
+      </component>
+      <component id="ad919" class="com.microsoft.azure.toolkit.intellij.containerapps.component.AzureContainerAppsEnvironmentComboBox" binding="cbEnvironment" custom-create="true">
+        <constraints>
+          <grid row="6" column="1" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <nested-form id="c8b19" form-file="com/microsoft/azure/toolkit/intellij/containerapps/component/ImageForm.form" binding="pnlContainer">
+        <constraints>
+          <grid row="9" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+        </constraints>
+      </nested-form>
+      <component id="d582" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="100" height="24"/>
+            <preferred-size width="100" height="24"/>
+            <maximum-size width="100" height="24"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Quickstart:"/>
+        </properties>
+      </component>
+      <component id="2cac4" class="javax.swing.JCheckBox" binding="chkUseQuickStart">
+        <constraints>
+          <grid row="8" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Use Quick Start Image"/>
+        </properties>
+      </component>
+      <component id="cb40a" class="com.intellij.ui.TitledSeparator">
+        <constraints>
+          <grid row="7" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font/>
+          <text value="App Settings"/>
+          <titleFont style="1"/>
+          <toolTipText value=""/>
+        </properties>
+      </component>
+      <component id="4f4b5" class="javax.swing.JLabel" binding="lblEnv">
+        <constraints>
+          <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="100" height="24"/>
+            <preferred-size width="100" height="24"/>
+            <maximum-size width="100" height="24"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Env Variables:"/>
+        </properties>
+      </component>
+      <component id="62991" class="com.microsoft.azure.toolkit.intellij.common.EnvironmentVariablesTextFieldWithBrowseButton" binding="inputEnv">
+        <constraints>
+          <grid row="10" column="1" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="8ac13" class="com.intellij.ui.TitledSeparator" binding="titleIngress">
+        <constraints>
+          <grid row="11" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font/>
+          <text value="Application Ingress Settings "/>
+          <titleFont style="1"/>
+          <toolTipText value=""/>
+        </properties>
+      </component>
+      <component id="ef6a2" class="javax.swing.JLabel" binding="lblIngress">
+        <constraints>
+          <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="100" height="24"/>
+            <preferred-size width="100" height="24"/>
+            <maximum-size width="100" height="24"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Ingress:"/>
+        </properties>
+      </component>
+      <component id="29427" class="javax.swing.JCheckBox" binding="chkIngress">
+        <constraints>
+          <grid row="12" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Enabled"/>
+        </properties>
+      </component>
+      <component id="d6f6b" class="javax.swing.JLabel" binding="lblExternalTraffic">
+        <constraints>
+          <grid row="13" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false">
+            <minimum-size width="100" height="24"/>
+            <preferred-size width="100" height="24"/>
+            <maximum-size width="100" height="24"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="External Traffic:"/>
+        </properties>
+      </component>
+      <component id="f8cff" class="javax.swing.JCheckBox" binding="chkExternalTraffic">
+        <constraints>
+          <grid row="13" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Enabled"/>
+        </properties>
+      </component>
+      <component id="7ffac" class="javax.swing.JLabel" binding="lblTargetPort">
+        <constraints>
+          <grid row="13" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="100" height="24"/>
+            <preferred-size width="100" height="24"/>
+            <maximum-size width="100" height="24"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Target Port:"/>
+        </properties>
+      </component>
+      <component id="2e532" class="com.intellij.ui.JBIntSpinner" binding="txtTargetPort" custom-create="true">
+        <constraints>
+          <grid row="13" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
     </children>
   </grid>
 </form>

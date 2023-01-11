@@ -55,8 +55,6 @@ public class ContainerAppCreationDialog extends AzureDialog<ContainerAppDraft.Co
     private JLabel lblRegion;
     private RegionComboBox cbRegion;
     private JPanel pnlRoot;
-    private JPanel pnlBasic;
-    private JTabbedPane pnlAppSettings;
     private JCheckBox chkUseQuickStart;
     private JLabel lblIngress;
     private JCheckBox chkIngress;
@@ -70,8 +68,6 @@ public class ContainerAppCreationDialog extends AzureDialog<ContainerAppDraft.Co
     private EnvironmentVariablesTextFieldWithBrowseButton inputEnv;
     private JLabel lblEnv;
     private JCheckBox chkExternalTraffic;
-    private ImageForm pnlAppSettingsContainer;
-    private JCheckBox chkAppSettingsUseQuickStart;
 
     public static final ContainerAppDraft.ImageConfig QUICK_START_IMAGE = ContainerAppDraft.ImageConfig.builder()
             .fullImageName("mcr.microsoft.com/azuredocs/containerapps-helloworld:latest").environmentVariables(new ArrayList<>()).build();
@@ -101,14 +97,6 @@ public class ContainerAppCreationDialog extends AzureDialog<ContainerAppDraft.Co
         this.cbRegion.addItemListener(this::onRegionChanged); // trigger validation after resource group changed
         this.cbResourceGroup.addItemListener(this::onResourceGroupChanged);
         this.chkUseQuickStart.addItemListener(e -> this.onSelectQuickImage(chkUseQuickStart.isSelected()));
-        this.chkAppSettingsUseQuickStart.addItemListener(e -> {
-            if (chkUseQuickStart.isSelected() != chkAppSettingsUseQuickStart.isSelected()) {
-                chkUseQuickStart.setSelected(chkAppSettingsUseQuickStart.isSelected());
-            }
-        });
-        this.pnlContainer.addValueChangeListenerToAllComponents(config -> mergeContainerConfiguration(pnlAppSettingsContainer, config));
-        this.pnlAppSettingsContainer.addValueChangeListenerToAllComponents(config -> mergeContainerConfiguration(pnlContainer, config));
-
         this.chkIngress.addItemListener(e -> this.onSelectIngress(chkIngress.isSelected()));
 
         this.chkUseQuickStart.setSelected(true);
@@ -187,15 +175,9 @@ public class ContainerAppCreationDialog extends AzureDialog<ContainerAppDraft.Co
             // set ingress config
             this.setIngressConfig(QUICK_START_INGRESS);
         }
-        if (useQuickStartImage != chkAppSettingsUseQuickStart.isSelected()) {
-            chkAppSettingsUseQuickStart.setSelected(useQuickStartImage);
-        }
         // toggle app settings enable status
-        this.titleContainerDetails.setEnabled(!useQuickStartImage);
         this.pnlContainer.setEnabled(!useQuickStartImage);
         this.pnlContainer.setVisible(!useQuickStartImage);
-        this.pnlAppSettingsContainer.setEnabled(!useQuickStartImage);
-        this.pnlAppSettingsContainer.setVisible(!useQuickStartImage);
         this.titleIngress.setEnabled(!useQuickStartImage);
         this.lblIngress.setEnabled(!useQuickStartImage);
         this.chkIngress.setEnabled(!useQuickStartImage);
