@@ -20,9 +20,11 @@ import com.microsoft.azure.toolkit.lib.applicationinsights.workspace.LogAnalytic
 import com.microsoft.azure.toolkit.lib.applicationinsights.workspace.LogAnalyticsWorkspaceModule;
 import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
+import com.microsoft.azure.toolkit.lib.common.form.AzureValidationInfo;
 import com.microsoft.azure.toolkit.lib.common.model.Region;
 import com.microsoft.azure.toolkit.lib.common.model.Subscription;
 import com.microsoft.azure.toolkit.lib.containerapps.environment.ContainerAppsEnvironmentDraft;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -30,8 +32,13 @@ import java.awt.event.ItemEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ContainerAppsEnvironmentCreationDialog extends AzureDialog<ContainerAppsEnvironmentDraft.Config> implements AzureForm<ContainerAppsEnvironmentDraft.Config> {
+    private static final Pattern CONTAINER_APPS_ENVIRONMENT_NAME_PATTERN = Pattern.compile("^[a-z][a-z0-9\\-]{0,30}[a-z0-9]$");
+    private static final String CONTAINER_APPS_ENVIRONMENT_NAME_VALIDATION_MESSAGE = "A name must consist of lower case alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character and cannot have '--'. The length must not be more than 32 characters.";
+
     private JLabel lblSubscription;
     private SubscriptionComboBox cbSubscription;
     private JLabel lblResourceGroup;
@@ -115,6 +122,7 @@ public class ContainerAppsEnvironmentCreationDialog extends AzureDialog<Containe
         this.cbResourceGroup.setRequired(true);
         this.cbRegion.setRequired(true);
         this.txtEnvironmentName.setRequired(true);
+        this.txtEnvironmentName.addValidator(this::validateContainerAppsEnvironmentName);
 
         this.cbSubscription.addItemListener(this::onSubscriptionChanged);
         this.cbRegion.addItemListener(this::onRegionChanged);
@@ -123,6 +131,14 @@ public class ContainerAppsEnvironmentCreationDialog extends AzureDialog<Containe
         this.lblResourceGroup.setLabelFor(cbResourceGroup);
         this.lblEnvironmentName.setLabelFor(txtEnvironmentName);
         this.lblRegion.setLabelFor(cbRegion);
+    }
+
+    private AzureValidationInfo validateContainerAppsEnvironmentName() {
+        final String name = txtEnvironmentName.getValue();
+        final Matcher matcher = CONTAINER_APPS_ENVIRONMENT_NAME_PATTERN.matcher(name);
+        return matcher.matches() && !StringUtils.contains(name, "--") ? AzureValidationInfo.success(txtEnvironmentName) :
+                AzureValidationInfo.error(CONTAINER_APPS_ENVIRONMENT_NAME_VALIDATION_MESSAGE, txtEnvironmentName);
+
     }
 
     private void onRegionChanged(ItemEvent itemEvent) {
