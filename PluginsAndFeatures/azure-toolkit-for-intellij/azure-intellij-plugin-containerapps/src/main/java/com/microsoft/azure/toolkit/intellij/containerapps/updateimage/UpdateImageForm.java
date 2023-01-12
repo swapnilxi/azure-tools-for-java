@@ -7,20 +7,15 @@ package com.microsoft.azure.toolkit.intellij.containerapps.updateimage;
 
 import com.azure.resourcemanager.appcontainers.models.EnvironmentVar;
 import com.intellij.icons.AllIcons;
-import com.intellij.uiDesigner.core.GridConstraints;
 import com.microsoft.azure.toolkit.intellij.common.AzureCommentLabel;
 import com.microsoft.azure.toolkit.intellij.common.AzureFormJPanel;
 import com.microsoft.azure.toolkit.intellij.common.EnvironmentVariablesTextFieldWithBrowseButton;
-import com.microsoft.azure.toolkit.intellij.containerapps.component.ACRImageForm;
 import com.microsoft.azure.toolkit.intellij.containerapps.component.ContainerAppComboBox;
-import com.microsoft.azure.toolkit.intellij.containerapps.component.ContainerRegistryTypeComboBox;
-import com.microsoft.azure.toolkit.intellij.containerapps.component.DockerHubImageForm;
-import com.microsoft.azure.toolkit.intellij.containerapps.component.OtherPublicRegistryImageForm;
+import com.microsoft.azure.toolkit.intellij.containerapps.component.ImageForm;
 import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
 import com.microsoft.azure.toolkit.lib.containerapps.containerapp.ContainerApp;
 import com.microsoft.azure.toolkit.lib.containerapps.containerapp.ContainerAppDraft;
 import com.microsoft.azure.toolkit.lib.containerapps.model.RevisionMode;
-import com.microsoft.azure.toolkit.lib.containerregistry.ContainerRegistry;
 import lombok.Data;
 import lombok.Getter;
 
@@ -34,12 +29,11 @@ import java.util.stream.Collectors;
 public class UpdateImageForm extends JPanel implements AzureFormJPanel<UpdateImageForm.UpdateImageConfig> {
     @Getter
     private JPanel contentPanel;
-    private ContainerRegistryTypeComboBox selectorRegistryType;
     private ContainerAppComboBox selectorApp;
     private JPanel formImageContainer;
     private AzureCommentLabel commentApp;
     private EnvironmentVariablesTextFieldWithBrowseButton inputEnv;
-    private AzureFormJPanel<ContainerAppDraft.ImageConfig> formImage;
+    private ImageForm imageForm;
 
     public UpdateImageForm() {
         super();
@@ -48,21 +42,17 @@ public class UpdateImageForm extends JPanel implements AzureFormJPanel<UpdateIma
     }
 
     private void init() {
-        this.selectorRegistryType.addItemListener(this::onRegistryTypeChanged);
         this.selectorApp.addItemListener(this::onAppChanged);
         this.selectorApp.setRequired(true);
         this.commentApp.setVisible(false);
         this.commentApp.setIconWithAlignment(AllIcons.General.Warning, SwingConstants.LEFT, SwingConstants.CENTER);
-        final String defaultType = ContainerRegistryTypeComboBox.ACR;
-        this.selectorRegistryType.setSelectedItem(defaultType);
-        this.updateImagePanel(defaultType);
     }
 
     @Override
     public synchronized UpdateImageConfig getValue() {
         final UpdateImageConfig config = new UpdateImageConfig();
         config.setApp(this.selectorApp.getValue());
-        config.setImage(this.formImage.getValue());
+        config.setImage(this.imageForm.getValue());
         final Map<String, String> envVarsMap = this.inputEnv.getEnvironmentVariables();
         final List<EnvironmentVar> vars = envVarsMap.entrySet().stream()
             .map(e -> new EnvironmentVar().withName(e.getKey()).withValue(e.getValue()))
@@ -73,8 +63,7 @@ public class UpdateImageForm extends JPanel implements AzureFormJPanel<UpdateIma
 
     @Override
     public void setValue(final UpdateImageConfig config) {
-        final ContainerAppDraft.ImageConfig imageConfig = config.getImage();
-        this.setImage(imageConfig);
+        this.imageForm.setValue(config.getImage());
         final ContainerApp app = config.getApp();
         this.setApp(app);
     }
@@ -83,20 +72,10 @@ public class UpdateImageForm extends JPanel implements AzureFormJPanel<UpdateIma
         this.selectorApp.setValue(app);
     }
 
-    public void setImage(ContainerAppDraft.ImageConfig imageConfig) {
-        final ContainerRegistry registry = imageConfig.getContainerRegistry();
-        final String type = registry != null ? ContainerRegistryTypeComboBox.ACR :
-            imageConfig.getFullImageName().startsWith("docker.io") ?
-                ContainerRegistryTypeComboBox.DOCKER_HUB : ContainerRegistryTypeComboBox.OTHER;
-        this.formImage = this.updateImagePanel(type);
-        this.selectorRegistryType.setSelectedItem(type);
-        this.formImage.setValue(imageConfig);
-    }
-
     @Override
     public List<AzureFormInput<?>> getInputs() {
         final AzureFormInput<?>[] inputs = {
-            this.formImage,
+            this.imageForm,
             this.selectorApp
         };
         return Arrays.asList(inputs);
@@ -106,12 +85,6 @@ public class UpdateImageForm extends JPanel implements AzureFormJPanel<UpdateIma
     public void setVisible(final boolean visible) {
         this.contentPanel.setVisible(visible);
         super.setVisible(visible);
-    }
-
-    private void onRegistryTypeChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-            this.formImage = this.updateImagePanel((String) e.getItem());
-        }
     }
 
     private void onAppChanged(final ItemEvent e) {
@@ -127,25 +100,6 @@ public class UpdateImageForm extends JPanel implements AzureFormJPanel<UpdateIma
                 this.commentApp.setVisible(true);
             }
         }
-    }
-
-    private synchronized AzureFormJPanel<ContainerAppDraft.ImageConfig> updateImagePanel(String type) {
-        final GridConstraints constraints = new GridConstraints();
-        constraints.setFill(GridConstraints.FILL_BOTH);
-        constraints.setHSizePolicy(GridConstraints.SIZEPOLICY_WANT_GROW);
-        constraints.setUseParentLayout(true);
-        final AzureFormJPanel<ContainerAppDraft.ImageConfig> newFormImage = switch (type) {
-            case ContainerRegistryTypeComboBox.ACR -> new ACRImageForm();
-            case ContainerRegistryTypeComboBox.DOCKER_HUB -> new DockerHubImageForm();
-            case ContainerRegistryTypeComboBox.OTHER -> new OtherPublicRegistryImageForm();
-            default -> throw new IllegalArgumentException("Unsupported registry type: " + type);
-        };
-        this.formImageContainer.removeAll();
-        this.formImageContainer.add(newFormImage.getContentPanel(), constraints);
-        this.formImageContainer.revalidate();
-        this.formImageContainer.repaint();
-        this.formImage = newFormImage;
-        return newFormImage;
     }
 
     private void createUIComponents() {
