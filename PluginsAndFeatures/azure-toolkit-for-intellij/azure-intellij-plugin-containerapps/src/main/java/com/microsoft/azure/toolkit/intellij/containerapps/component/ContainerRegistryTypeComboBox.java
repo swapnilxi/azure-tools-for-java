@@ -18,7 +18,7 @@ public class ContainerRegistryTypeComboBox extends ComboBox<String> {
 
     public static final String ACR = "Azure Container Registries";
     public static final String DOCKER_HUB = "Docker Hub Registry";
-    public static final String OTHER = "Other public Registry";
+    public static final String OTHER = "Other public registry";
 
     public ContainerRegistryTypeComboBox() {
         super();
@@ -34,7 +34,7 @@ public class ContainerRegistryTypeComboBox extends ComboBox<String> {
             final Icon icon = switch (String.valueOf(value)) {
                 case ACR -> IntelliJAzureIcons.getIcon(AzureIcons.ContainerRegistry.MODULE);
                 case DOCKER_HUB -> IconLoader.getIcon("/icons/Docker.svg", ContainerRegistryTypeComboBox.class);
-                default -> AllIcons.Actions.Help;
+                default -> IconLoader.getIcon("/icons/Registry.svg", ContainerRegistryTypeComboBox.class);
             };
             this.setIcon(icon);
             return this;
