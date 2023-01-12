@@ -1,0 +1,147 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ */
+
+package com.microsoft.azure.toolkit.intellij.containerapps.creation;
+
+import com.intellij.openapi.project.Project;
+import com.microsoft.azure.toolkit.intellij.applicationinsights.creation.WorkspaceComboBox;
+import com.microsoft.azure.toolkit.intellij.common.AzureDialog;
+import com.microsoft.azure.toolkit.intellij.common.AzureTextInput;
+import com.microsoft.azure.toolkit.intellij.common.component.RegionComboBox;
+import com.microsoft.azure.toolkit.intellij.common.component.SubscriptionComboBox;
+import com.microsoft.azure.toolkit.intellij.common.component.resourcegroup.ResourceGroupComboBox;
+import com.microsoft.azure.toolkit.lib.Azure;
+import com.microsoft.azure.toolkit.lib.applicationinsights.workspace.AzureLogAnalyticsWorkspace;
+import com.microsoft.azure.toolkit.lib.applicationinsights.workspace.LogAnalyticsWorkspace;
+import com.microsoft.azure.toolkit.lib.applicationinsights.workspace.LogAnalyticsWorkspaceConfig;
+import com.microsoft.azure.toolkit.lib.applicationinsights.workspace.LogAnalyticsWorkspaceDraft;
+import com.microsoft.azure.toolkit.lib.applicationinsights.workspace.LogAnalyticsWorkspaceModule;
+import com.microsoft.azure.toolkit.lib.common.form.AzureForm;
+import com.microsoft.azure.toolkit.lib.common.form.AzureFormInput;
+import com.microsoft.azure.toolkit.lib.common.model.Region;
+import com.microsoft.azure.toolkit.lib.common.model.Subscription;
+import com.microsoft.azure.toolkit.lib.containerapps.environment.ContainerAppsEnvironmentDraft;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.awt.event.ItemEvent;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+public class ContainerAppsEnvironmentCreationDialog extends AzureDialog<ContainerAppsEnvironmentDraft.Config> implements AzureForm<ContainerAppsEnvironmentDraft.Config> {
+    private JLabel lblSubscription;
+    private SubscriptionComboBox cbSubscription;
+    private JLabel lblResourceGroup;
+    private ResourceGroupComboBox cbResourceGroup;
+    private JLabel lblEnvironmentName;
+    private AzureTextInput txtEnvironmentName;
+    private JPanel pnlRoot;
+    private WorkspaceComboBox cbWorkspace;
+    private JLabel lblRegion;
+    private RegionComboBox cbRegion;
+
+    private final Project project;
+
+    public ContainerAppsEnvironmentCreationDialog(final Project project) {
+        super(project);
+        this.project = project;
+        $$$setupUI$$$();
+        init();
+    }
+
+    @Override
+    public AzureForm<ContainerAppsEnvironmentDraft.Config> getForm() {
+        return this;
+    }
+
+    @Override
+    protected String getDialogTitle() {
+        return "Create Container Apps Environment";
+    }
+
+    @Override
+    protected @Nullable JComponent createCenterPanel() {
+        return pnlRoot;
+    }
+
+    @Override
+    public ContainerAppsEnvironmentDraft.Config getValue() {
+        final ContainerAppsEnvironmentDraft.Config result = new ContainerAppsEnvironmentDraft.Config();
+        result.setSubscription(cbSubscription.getValue());
+        result.setResourceGroup(cbResourceGroup.getValue());
+        result.setRegion(cbRegion.getValue());
+        result.setName(txtEnvironmentName.getValue());
+        final LogAnalyticsWorkspaceModule workspaceModule = Azure.az(AzureLogAnalyticsWorkspace.class).logAnalyticsWorkspaces(result.getSubscription().getId());
+        final LogAnalyticsWorkspaceConfig workspaceConfig = cbWorkspace.getValue();
+        final LogAnalyticsWorkspace workspace;
+        if (workspaceConfig.isNewCreate()) {
+            workspace = workspaceModule.create(workspaceConfig.getName(), result.getResourceGroup().getResourceGroupName());
+            ((LogAnalyticsWorkspaceDraft)workspace).setRegion(result.getRegion());
+        } else {
+            workspace = workspaceModule.get(workspaceConfig.getResourceId());
+        }
+        result.setLogAnalyticsWorkspace(workspace);
+        return result;
+    }
+
+    @Override
+    public void setValue(ContainerAppsEnvironmentDraft.Config data) {
+        Optional.ofNullable(data.getSubscription()).ifPresent(cbSubscription::setValue);
+        Optional.ofNullable(data.getResourceGroup()).ifPresent(cbResourceGroup::setValue);
+        Optional.ofNullable(data.getName()).ifPresent(txtEnvironmentName::setValue);
+        Optional.ofNullable(data.getRegion()).ifPresent(cbRegion::setValue);
+        Optional.ofNullable(data.getLogAnalyticsWorkspace())
+                .map(this::convertLogAnalyticsWorkspaceToConfig)
+                .ifPresent(cbWorkspace::setValue);
+    }
+
+    private LogAnalyticsWorkspaceConfig convertLogAnalyticsWorkspaceToConfig(final LogAnalyticsWorkspace workspace) {
+        return workspace.isDraftForCreating() ? LogAnalyticsWorkspaceConfig.builder().newCreate(true).name(workspace.getName())
+                .subscriptionId(workspace.getSubscriptionId()).regionName(workspace.getRegion().getName()).build() :
+                LogAnalyticsWorkspaceConfig.builder().newCreate(false).resourceId(workspace.getId()).build();
+    }
+
+    @Override
+    public List<AzureFormInput<?>> getInputs() {
+        return Arrays.asList(txtEnvironmentName, cbSubscription, cbResourceGroup, cbWorkspace);
+    }
+
+    public void init() {
+        super.init();
+        this.cbSubscription.setRequired(true);
+        this.cbResourceGroup.setRequired(true);
+        this.cbRegion.setRequired(true);
+        this.txtEnvironmentName.setRequired(true);
+
+        this.cbSubscription.addItemListener(this::onSubscriptionChanged);
+        this.cbRegion.addItemListener(this::onRegionChanged);
+
+        this.lblSubscription.setLabelFor(cbSubscription);
+        this.lblResourceGroup.setLabelFor(cbResourceGroup);
+        this.lblEnvironmentName.setLabelFor(txtEnvironmentName);
+        this.lblRegion.setLabelFor(cbRegion);
+    }
+
+    private void onRegionChanged(ItemEvent itemEvent) {
+        if (itemEvent.getStateChange() == ItemEvent.SELECTED && itemEvent.getItem() instanceof Region) {
+            final Region region = (Region) itemEvent.getItem();
+            this.cbWorkspace.setRegion(region);
+        }
+    }
+
+    private void onSubscriptionChanged(ItemEvent itemEvent) {
+        if (itemEvent.getStateChange() == ItemEvent.SELECTED && itemEvent.getItem() instanceof Subscription) {
+            final Subscription subscription = (Subscription) itemEvent.getItem();
+            this.cbResourceGroup.setSubscription(subscription);
+            this.cbRegion.setSubscription(subscription);
+            this.cbWorkspace.setSubscription(subscription);
+        }
+    }
+
+    // CHECKSTYLE IGNORE check FOR NEXT 1 LINES
+    private void $$$setupUI$$$() {
+    }
+}

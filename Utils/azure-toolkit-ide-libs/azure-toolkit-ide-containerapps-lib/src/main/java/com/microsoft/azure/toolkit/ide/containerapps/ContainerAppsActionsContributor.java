@@ -19,6 +19,7 @@ import com.microsoft.azure.toolkit.lib.common.messager.AzureMessager;
 import com.microsoft.azure.toolkit.lib.common.model.AbstractAzResource;
 import com.microsoft.azure.toolkit.lib.common.model.AzResource;
 import com.microsoft.azure.toolkit.lib.common.model.AzResourceBase;
+import com.microsoft.azure.toolkit.lib.containerapps.AzureContainerApps;
 import com.microsoft.azure.toolkit.lib.containerapps.containerapp.ContainerApp;
 import com.microsoft.azure.toolkit.lib.containerapps.containerapp.Revision;
 import com.microsoft.azure.toolkit.lib.resource.ResourceGroup;
@@ -37,6 +38,7 @@ public class ContainerAppsActionsContributor implements IActionsContributor {
     public static final String REVISION_ACTIONS = "actions.containerapps.revision";
 
     public static final Action.Id<Object> CREATE_CONTAINER_APP = Action.Id.of("user/containerapps.create_container_app");
+    public static final Action.Id<AzureContainerApps> CREATE_CONTAINER_APPS_ENVIRONMENT = Action.Id.of("user/containerapps.create_container_apps_environment");
     public static final Action.Id<ContainerApp> BROWSE = Action.Id.of("user/containerapps.open_in_browser.app");
     public static final Action.Id<ContainerApp> ACTIVATE_LATEST_REVISION = Action.Id.of("user/containerapps.activate_latest_revision.app");
     public static final Action.Id<ContainerApp> DEACTIVATE_LATEST_REVISION = Action.Id.of("user/containerapps.deactivate_latest_revision.app");
@@ -48,11 +50,18 @@ public class ContainerAppsActionsContributor implements IActionsContributor {
     public static final Action.Id<Revision> RESTART = Action.Id.of("user/containerapps.restart.revision");
     public static final Action.Id<Revision> OPEN_IN_BROWSER = Action.Id.of("user/containerapps.open_in_browser.revision");
     public static final Action.Id<ResourceGroup> GROUP_CREATE_CONTAINER_APP = Action.Id.of("user/containerapps.create_container_app.group");
+    public static final Action.Id<ResourceGroup> GROUP_CREATE_CONTAINER_APPS_ENVIRONMENT = Action.Id.of("user/containerapps.create_container_apps_environment.group");
 
     @Override
     public void registerActions(AzureActionManager am) {
         new Action<>(CREATE_CONTAINER_APP)
                 .withLabel("Create Container App")
+                .withIcon(AzureIcons.Action.CREATE.getIconPath())
+                .withShortcut(am.getIDEDefaultShortcuts().add())
+                .register(am);
+
+        new Action<>(CREATE_CONTAINER_APPS_ENVIRONMENT)
+                .withLabel("Create Container Apps Environment")
                 .withIcon(AzureIcons.Action.CREATE.getIconPath())
                 .withShortcut(am.getIDEDefaultShortcuts().add())
                 .register(am);
@@ -159,6 +168,12 @@ public class ContainerAppsActionsContributor implements IActionsContributor {
             .withIdParam(AzResource::getName)
             .enableWhen(s -> s instanceof ResourceGroup && ((ResourceGroup) s).getFormalStatus().isConnected())
             .register(am);
+
+        new Action<>(GROUP_CREATE_CONTAINER_APPS_ENVIRONMENT)
+                .withLabel("Container Apps Environment")
+                .withIdParam(AzResource::getName)
+                .enableWhen(s -> s instanceof ResourceGroup && ((ResourceGroup) s).getFormalStatus().isConnected())
+                .register(am);
     }
 
     @Override
@@ -166,7 +181,7 @@ public class ContainerAppsActionsContributor implements IActionsContributor {
         final ActionGroup serviceActionGroup = new ActionGroup(
             ResourceCommonActionsContributor.REFRESH,
             "---",
-            ContainerAppsActionsContributor.CREATE_CONTAINER_APP
+            ContainerAppsActionsContributor.CREATE_CONTAINER_APPS_ENVIRONMENT
         );
         am.registerGroup(SERVICE_ACTIONS, serviceActionGroup);
 
@@ -217,6 +232,7 @@ public class ContainerAppsActionsContributor implements IActionsContributor {
 
         final IActionGroup group = am.getGroup(ResourceCommonActionsContributor.RESOURCE_GROUP_CREATE_ACTIONS);
         group.addAction(GROUP_CREATE_CONTAINER_APP);
+        group.addAction(GROUP_CREATE_CONTAINER_APPS_ENVIRONMENT);
     }
 
     @Override
